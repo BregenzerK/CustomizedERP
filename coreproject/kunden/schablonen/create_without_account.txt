@@ -1,0 +1,13 @@
+def create_without_account (request):
+    if request.POST:
+        formKunde = KundenForm(request.POST)
+        if formKunde.is_valid():
+            formKunde.save()
+            return HttpResponseRedirect('/kunden/overview')
+    else:
+        formKunde = KundenForm
+        
+    c= {'formKunde': formKunde,
+        }
+    c.update(csrf(request))
+    return render_to_response('createKunde.html', c)

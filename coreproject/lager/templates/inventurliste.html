@@ -1,0 +1,53 @@
+{%extends "base.html" %}
+
+
+{%block sidebar %}
+
+{%endblock %}
+
+
+{%block content %}
+<h2>Inventurliste</h2>
+<form method="post" action="/lager/inventurliste" class="ui form">
+{% csrf_token %}
+{%if errors %}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in errors.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  </div>
+    {%endif%}
+<table class= "ui table" id="positions" >
+<thead>
+<tr>
+ {%for position in inventurFormset %}
+{% if forloop.first %}
+{% for field in position%}
+<th>
+{{field.label}}
+</th>
+{%endfor%}
+{%endif%}
+{%endfor%} 
+</tr>
+</thead>
+<tbody>
+{{ inventurFormset.management_form }}
+{%for position in inventurFormset %}
+<tr id={{forloop.counter0}}>
+{%for field in position%}
+
+<td>
+{{field}}
+</td>
+{%endfor%}
+</tr>
+{%endfor%}
+</tbody>
+</table> 
+<input type="submit", class="ui submit button" value="speichern">
+</form>
+{%endblock%}

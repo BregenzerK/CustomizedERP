@@ -1,0 +1,908 @@
+<html lang="de">
+
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <!-- Site Properities -->
+  <title>Konfigurator</title>
+  
+ 
+  
+  {% load staticfiles %} 
+  <link rel="stylesheet" type="text/css" href="{% static 'css/semantic.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+  <script src="{% static 'javascript/jquery-1.11.1.js' %}"></script>
+  <script src="{% static 'javascript/semantic.js' %}"></script>
+  <script src="{% static 'javascript/main.js' %}"></script>
+  <script src="{% static 'javascript/configuratorRules.js' %}"></script>
+  <script src="{% static 'jquery-cookie/jquery.cookie.js' %}"></script>
+</head>
+
+<body>
+<h1>Warenwirtschaftssystem - Konfigurator</h1>
+
+<div class="ui tabular menu">
+<a class="active item" data-tab="einkauf">Einkauf</a>
+<a class="item"data-tab="kauf">Kaufabwicklung</a>
+<a class="item"data-tab="lager">Lagerverwaltung</a>
+<a class="item"data-tab="kunden">Kundenverwaltung</a>
+</div>
+
+<form action="/" method="post"> {% csrf_token %}
+
+<div class="ui tab active" data-tab="einkauf">
+
+	<div class="ui toggle checkbox" id="einkauf">
+	{{form.einkauf}}
+  	<label>Einkauf aktivieren</label>
+    </div>
+	<div class="ui segment" name="segment_bedarf">
+	<h4>Wie möchten Sie Ihre Bedarfsermittlung durchführen?</h4>
+			{% for radio in form.bedarf %}
+					{{radio}}
+			<br>
+			{% endfor %}
+			
+</div> <!--segment-->
+
+<div class="ui segment" name="segment_bestellung">
+	<h4>Möchten Sie Bestellungen verwalten können?</h4>
+	{% for radio in form.bestellung %}
+    		{{ radio}}
+	<br>
+	{% endfor %}
+</div><!-- segment -->
+
+	<div class="ui segment" name="segment_bestellung_intern" hidden="hidden">
+<h4>Möchten Sie Bestellungen über Ihr Warenwirtschaftssystem verschicken können?</h4>
+	{% for radio in form.bestellung_intern %}
+    		{{ radio}}
+	<br>
+	{% endfor %}
+</div><!-- segment -->
+
+	<div class="ui segment" name="segment_bestellung_extern" hidden="hidden">
+<h4>Möchten Sie Bestellungen exportieren können, um sie auf anderen Kanälen dem Lieferant zu übermitteln?</h4>
+	{% for radio in form.bestellung_extern %}
+    		{{ radio}}
+	<br>
+	{% endfor %}
+</div><!-- segment -->
+
+<div class="ui segment" name="segment_lieferantDaten" hidden="hidden">
+	<h4>Welche Daten möchten Sie zu Ihren Lieferanten speichern?</h4>
+		
+		<div class="ui tiny horizontal list">
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Firmennamen</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Ansprechpartner</div>
+			</div>
+		</div> <!-- list-->
+	
+	<div class="ui three column grid">	
+	<div class="column">
+	
+		<div class="ui checkbox" id="lieferant_adresse">
+			{{form.lieferant_adresse}}
+  			<label>Adresse</label>
+		</div> <br>
+		<div class="ui left floated segment">
+		
+		<div class="ui checkbox"  id="lieferant_strasse">
+			{{form.lieferant_strasse}}
+  			<label>Straße und Hausnummer</label>
+		</div><br>
+		<div class="ui checkbox" id="lieferant_plz">
+			{{form.lieferant_plz}}
+  			<label>PLZ</label>
+		</div><br>
+		<div class="ui checkbox" id="lieferant_stadt">
+			{{form.lieferant_stadt}}
+  			<label>Stadt</label>
+		</div>
+		</div> <!--left floated segment-->
+		</div> <!--column-->
+
+	<div class="column">
+		<div class="ui checkbox" id="lieferant_mail">
+			{{form.lieferant_mail}}
+  			<label>E-Mail</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="lieferant_tel">
+			{{form.lieferant_tel}}
+  			<label>Telefonnummer</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="lieferant_homepage">
+			{{form.lieferant_homepage}}
+  			<label>Homepage</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="lieferant_ustid">
+			{{form.lieferant_ustid}}
+  			<label>UstID</label>	
+		</div><br>
+		
+		<div class="ui checkbox"  id="lieferant_mindestbestellwert">
+			{{form.lieferant_mindestbestellwert}}
+  			<label>Mindestbestellwert</label>	
+		</div><br>
+	</div> <!--column-->
+	
+	<div class="column">
+		<div class="ui checkbox" id="lieferant_konto">
+			{{form.lieferant_konto}}
+  			<label>Kontodaten</label>
+		</div><br>
+		<div class="ui left floated segment" name="lieferant_kontodaten" hidden="hidden">		
+		<div class="ui tiny list">
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Kontonummer/ IBAN</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Kontoinhaber</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">BLZ/ BIC</div>
+			</div>
+		</div>
+		</div> <!--left floated segment-->
+		</div> <!--column-->
+	</div> <!--grid-->
+</div> <!--segment-->
+
+	<div class="ui segment" name="segment_bestellungDaten" hidden="hidden">
+	<h4>Welche Daten möchten Sie zu Ihrer Bestellung speichern?</h4>
+	
+	<div class="ui tiny horizontal list">
+			<div class="item"> <i class="circular green checkmark icon"></i>
+			<div class="content">Warenpositionen (jeweils Produkt und Menge)</div>
+			</div>
+			<div class="item"> <i class="circular green checkmark icon"></i>
+			<div class="content">Lieferant</div>
+			</div>
+			<div class="item"> <i class="circular green checkmark icon"></i>
+			<div class="content">Summe</div>
+			</div>
+			<div class="item"> <i class="circular green checkmark icon"></i>
+			<div class="content">Status (offen/ geschlossen)</div>
+			</div>
+	</div> <!-- list-->
+	<br>
+	<div class="ui checkbox" id="bestellung_lieferort">
+			{{form.bestellung_lieferort}}
+  			<label>Lieferort</label>
+		</div><br>
+
+		<div class="ui checkbox" id="bestellung_lieferdatum">
+			{{form.bestellung_lieferdatum}}
+  			<label>erwartetes Lieferdatum</label>	
+		</div>
+</div> <!--segment-->
+
+	<div class="ui segment" id="segment_bestellungBelege" hidden="hidden">
+<h4>Welche Belege möchten Sie zu Ihrer Bestellung ablegen können?</h4>
+		<div class="ui checkbox" id="bestellung_auftragsbestaetigung">
+			{{form.bestellung_auftragsbestaetigung}}
+  			<label>Auftragsbestätigung</label>
+		</div><br>
+
+		<div class="ui checkbox" id="bestellung_lieferschein">
+			{{form.bestellung_lieferschein}}
+  			<label>Lieferschein</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="bestellung_rechnung">
+			{{form.bestellung_rechnung}}
+  			<label>Rechnung</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="bestellung_quittung">
+			{{form.bestellung_quittung}}
+  			<label>Quittung</label>	
+		</div><br>
+</div>
+
+	<div class="ui segment" name="segment_scanner" hidden="hidden">
+<h4>Möchten Sie einen EAN Scanner für den Wareneingang verwenden?</h4>
+	{% for radio in form.scanner %}
+    		{{ radio}}
+		<br>
+	{% endfor %}
+</div>	
+
+	<div class="ui segment" name="segment_bestellungBezahlung" hidden="hidden">
+<h4>Möchten Sie die Bestellung über Ihr Warenwirtschaftssystem bezahlen?</h4>
+	{% for radio in form.bezahlung %}
+    		{{ radio}}
+		<br>
+	{% endfor %}
+</div>
+
+</div> <!--Tab Einkauf-->
+
+<div class="ui tab"  data-tab="kauf">
+	<div class="ui toggle checkbox"  id="kauf">
+  	{{form.kauf}}
+  	<label>Kaufabwicklung aktivieren</label>
+    </div>
+	
+	<div class="ui segment" name="segment_angebot">
+		<h4>Möchten Sie Angebote über Ihr Warenwirtschaftssystem erstellen und verwalten?</h4>
+			{% for radio in form.angebot %}
+    				{{ radio}}
+				<br>
+			{% endfor %}
+</div>
+
+<div class="ui segment" name="segment_kaufabschluss">
+		<h4>Möchten Sie Kaufabschlüsse über Ihr Warenwirtschaftssystem erstellen und verwalten?</h4>
+			{% for radio in form.kaufabschluss %}
+    				{{ radio}}
+				<br>
+			{% endfor %}
+</div>
+
+	<div class="ui segment" hidden="hidden" name="segment_angebotDaten">
+	<h4>Welche Daten möchten Sie zu Ihren Angeboten speichern?</h4>
+		
+		<div class="ui tiny horizontal list">
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Kunde</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Warenpositionen (Produkt und Menge) </div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Summe</div>
+			</div>
+		</div> <!-- list-->
+	
+	<div class="ui two column grid">	
+	<div class="column">
+		<div class="ui checkbox" id="angebot_mwst">
+			{{form.angebot_mwst}}
+  			<label>Mehrwertsteuer auszeichnen können</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="angebot_standort">
+			{{form.angebot_standort}}
+  			<label>Standort</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="angebot_datum">
+			{{form.angebot_datum}}
+  			<label>Datum</label>	
+		</div><br>
+
+	</div> <!--column-->
+	
+	<div class="column">
+		<div class="ui checkbox" id="angebot_rabattgrund">
+			{{form.angebot_rabattgrund}}
+  			<label>Begründung Rabatt</label>
+		</div><br>
+		<div class="ui checkbox" id="angebot_rabatt">
+			{{form.angebot_rabatt}}
+  			<label>Rabatt</label>
+		</div><br>
+		<div class="ui left floated segment">
+		
+		<div class="ui checkbox" id="angebot_prozentrabatt">
+			{{form.angebot_prozentrabatt}}
+  			<label>prozentualer Rabatt</label>
+		</div><br>
+		<div class="ui checkbox" id="angebot_betragsrabatt">
+			{{form.angebot_betragsrabatt}}
+  			<label>Betragsrabatt</label>
+		</div><br>
+		</div> <!--left floated segment-->	
+		</div> <!--column-->
+	
+	</div> <!--grid-->
+</div> <!--segment-->
+
+	<div class="ui segment" hidden="hidden" name="segment_kauf">
+	<h4>Welche Daten möchten Sie zu Ihren Kaufabschlüssen speichern?</h4>
+		
+		<div class="ui tiny horizontal list">
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Kunde</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Warenpositionen (Produkt und Menge) </div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Summe</div>
+			</div>
+		</div> <!-- list-->
+	
+	<div class="ui two column grid">	
+	<div class="column">
+		<div class="ui checkbox" id="kauf_mwst">
+			{{form.kauf_mwst}}
+  			<label>Mehrwertsteuer auszeichnen können</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="kauf_standort">
+			{{form.kauf_standort}}
+  			<label>Standort</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="kauf_datum">
+			{{form.kauf_datum}}
+  			<label>Datum</label>	
+		</div><br>
+
+	</div> <!--column-->
+	
+	<div class="column">
+		<div class="ui checkbox" id="kauf_rabattgrund">
+			{{form.kauf_rabattgrund}}
+  			<label>Begründung Rabatt</label>
+		</div><br>
+		<div class="ui checkbox" id="kauf_rabatt">
+			{{form.kauf_rabatt}}
+  			<label>Rabatt</label>
+		</div><br>
+		<div class="ui left floated segment">
+		
+		<div class="ui checkbox" id="kauf_prozentrabatt">
+			{{form.kauf_prozentrabatt}}
+  			<label>prozentualer Rabatt</label>
+		</div><br>
+		<div class="ui checkbox" id="kauf_betragsrabatt">
+			{{form.kauf_betragsrabatt}}
+  			<label>Betragsrabatt</label>
+		</div><br>
+		</div> <!--left floated segment-->	
+		</div> <!--column-->
+	
+	</div> <!--grid-->
+</div> <!--segment-->
+
+	<div class="ui segment" hidden="hidden" name="segment_kauffunktionen">
+		<h4>Welche Varianten möchten Sie bei der Kaufabwicklung durchführen können?</h4>
+		<div class="ui checkbox" id="kreditwuerdig">
+			{{form.kreditwuerdig}}
+  			<label>Kreditwürdigkeit eines Kunden prüfen</label>
+		</div><br>
+
+		<div class="ui checkbox" id="angebotUmwandeln">
+			{{form.angebotUmwandeln}}
+  			<label>Angebot in einen Kaufabschluss umwandeln</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="nichtVoraetigeProdukte">
+			{{form.nichtVoraetigeProdukte}}
+  			<label>Käufe über nicht vorrätige Produkte abschließen</label>	
+		</div>
+</div><!--segment-->
+
+<div class="ui segment" name="segment_scanner_kauf" hidden="hidden">
+		<h4>Möchten Sie einen EAN Scanner für den Warenausgang verwenden?</h4>
+			{% for radio in form.scanner_kauf %}
+    				{{ radio}}
+				<br>
+			{% endfor %}
+</div>
+
+	<div class="ui segment" hidden="hidden" name="segment_zahlung">
+		<h4>Möchten Sie Zahlungen verfolgen können?</h4>
+		
+		<div class="ui two column grid">
+		<div class="column">
+		{% for radio in form.zahlung %}
+    				{{ radio}}
+				<br>
+		{% endfor %}
+		</div><!--column-->
+		
+		<div class="column">
+		<h5>Bei welchen Zahlarten?</h5>
+		<div class="ui checkbox" id="zahlart_raten">
+			{{form.zahlart_raten}}
+  			<label>Ratenzahlung</label>
+		</div><br>
+		<div class="ui checkbox" id="zahlart_kreditkarte">
+			{{form.zahlart_kreditkarte}}
+  			<label>Kreditkarte</label>
+		</div><br>
+		</div> <!--column-->
+		
+		</div><!--grid-->
+</div><!--segment-->
+
+</div> <!--Tab Kauf -->
+
+<div class="ui tab" data-tab="lager">
+<div class="ui toggle checkbox" id="lager">
+  	{{form.lager}}
+  	<label>Lagerverwaltung aktivieren</label>
+    </div>
+	
+	<div class="ui segment" name="segment_produkttypen">
+	<h4>Welche Produkttypen möchten Sie verwalten?</h4>
+	<p><i>Produkttyp bedeutet, dass sich die dazugehörigen Produkte alle mit den gleichen Eigenschaften beschreiben lassen. 
+	Verschiedene Fabrikate der Produkttypen können Sie später anlegen<p></i>
+	
+	{{ formsetProdukt.management_form }}
+    {% for form in formsetProdukt.forms %}
+	<div id="produkttyp_0">
+	<b>Name des Produkttyps (im Singular und ohne Umlaute):</b>
+	<div class="ui input" id="produkttyp_name">
+	{{form.produkttyp_name}}
+	</div><br>
+	
+	<div class="ui tiny horizontal list">
+		<div class="item"> <i class="small circular green checkmark icon"></i>
+		<div class="content">Fabrikatsname</div>
+		</div>
+		<div class="item"> <i class="small circular green checkmark icon"></i>
+		<div class="content">Verkaufspreis</div>
+		</div>
+		<div class="item"> <i class="small circular green checkmark icon"></i>
+		<div class="content">Einkaufspreis</div>
+		</div>
+	</div> <!-- list-->
+	
+	<div class="ui three column grid">
+		
+	<div class="column">
+		<div  class="ui checkbox" id="artikelnummer">
+			{{form.artikelnummer}}
+  			<label>Artikelnummer</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="produktkategorie">
+			{{form.produktkategorie}}
+  			<label>Produktkategorie</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="hersteller">
+			{{form.hersteller}}
+  			<label>Hersteller</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="beschreibung">
+			{{form.beschreibung}}
+  			<label>Produktbeschreibung</label>	
+		</div><br>
+	</div><!--column-->
+	
+	<div class="column">
+		<div class="ui checkbox" id="lieferant">
+			{{form.lieferant}}
+  			<label>Lieferant</label>	<!--nur noch relevant, wenn Beschaffung deaktiviert-->
+		</div><br>
+		
+		<div class="ui checkbox" id="listenpreisVK">
+			{{form.listenpreisVK}}
+  			<label>Listenpreis Verkaufspreis</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="ausmasse">
+			{{form.ausmasse}}
+  			<label>Größe/ Ausmaße</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="farben">
+			{{form.farben}}
+  			<label>Farben</label>	
+		</div><br>
+	</div><!--column-->	
+	
+	<div class="column">
+		<div class="ui checkbox" id="mwst_klasse">
+			{{form.mwst_klasse}}
+  			<label>Mehrwertsteuerklasse</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="durchschn_EK">
+			{{form.durchschn_EK}}
+  			<label>durchschnittlicher Einkaufspreis</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="letzter_EK">
+			{{form.letzter_EK}}
+  			<label>letzter Einkaufspreis</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="bemerkung">
+			{{form.bemerkung}}
+  			<label>Bemerkung</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="ean_nummer">
+			{{form.ean_nummer}}
+  			<label>EAN Nummer</label>
+		</div><br>
+		
+	</div><!--column-->
+	</div><!--grid-->
+	<br>
+	</div><!--produkttyp-->
+	{%endfor%}
+	<div class="medium right floated ui button" id="addProduct">weiteren Produkttyp hinzufügen</div>
+	</div> <!--segment-->
+	
+	<div class="ui segment" name="segment_lieferantDaten_lager" hidden="hidden">
+	<h4>Welche Daten möchten Sie zu Ihren Lieferanten speichern?</h4>
+		
+		<div class="ui tiny horizontal list">
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Firmennamen</div>
+			</div>
+		</div> <!-- list-->
+	
+	<div class="ui three column grid">	
+	<div class="column">
+	
+		<div class="ui checkbox" id="lager_lieferant_adresse">
+			{{form.lager_lieferant_adresse}}
+  			<label>Adresse</label>
+		</div> <br>
+		<div class="ui left floated segment">
+		
+		<div class="ui checkbox"  id="lager_lieferant_strasse">
+			{{form.lager_lieferant_strasse}}
+  			<label>Straße und Hausnummer</label>
+		</div><br>
+		<div class="ui checkbox" id="lager_lieferant_plz">
+			{{form.lager_lieferant_plz}}
+  			<label>PLZ</label>
+		</div><br>
+		<div class="ui checkbox" id="lager_lieferant_stadt">
+			{{form.lager_lieferant_stadt}}
+  			<label>Stadt</label>
+		</div>
+		</div> <!--left floated segment-->
+		</div> <!--column-->
+
+	<div class="column">
+		<div class="ui checkbox" id="lager_lieferant_mail">
+			{{form.lager_lieferant_mail}}
+  			<label>E-Mail</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="lager_lieferant_tel">
+			{{form.lager_lieferant_tel}}
+  			<label>Telefonnummer</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="lager_lieferant_homepage">
+			{{form.lager_lieferant_homepage}}
+  			<label>Homepage</label>	
+		</div><br>
+		
+		<div class="ui checkbox" id="lager_lieferant_ustid">
+			{{form.lager_lieferant_ustid}}
+  			<label>UstID</label>	
+		</div><br>
+	</div> <!--column-->
+	
+	<div class="column">
+		<div class="ui checkbox" id="lager_lieferant_konto">
+			{{form.lager_lieferant_konto}}
+  			<label>Kontodaten</label>
+		</div><br>
+		<div class="ui left floated segment" name="lager_lieferant_kontodaten" hidden="hidden">		
+		<div class="ui tiny list">
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Kontonummer/ IBAN</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Kontoinhaber</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">BLZ/ BIC</div>
+			</div>
+		</div>
+		</div> <!--left floated segment-->
+		</div> <!--column-->
+	</div> <!--grid-->
+</div> <!--segment-->
+
+<div class="ui segment" hidden="hidden" name="segment_produktkategorien">
+	<h4>Welche Produktkategorien möchten Sie anlegen?</h4>
+	
+	{{ formsetKategorie.management_form }}
+    {% for form in formsetKategorie.forms %}
+	<div class="ui action input" id="kategorie_0">
+			{{form.kategorie}}
+			<div class="ui icon button" id="plus_kategorie">
+			<i class="plus icon"></i>
+			</div>
+	</div><br>
+	<div id="produktkategorien">
+	</div>
+	{%endfor%}
+	</div><!--segment-->
+	
+	<div class="ui segment" name="segment_lager_filtern">
+		<h4>Möchten Sie nach Ihren Produkten suchen und filtern können?</h4>
+		
+		<div class="ui two column grid">
+		<div class="column">
+		{% for radio in form.filtern %}
+    				{{ radio}}
+				<br>
+			{% endfor %}
+		</div><!--column-->
+		
+		<div class="column">
+		<h5>Nach welchen Eigenschaften möchten suchen/ filtern?</h5>
+		<div class="ui checkbox" id="filtern_fabrikat" hidden="hidden">
+			{{form.filtern_fabrikat}}
+  			<label>Fabrikat</label>
+		</div><br>
+		<div class="ui checkbox" id="filtern_seriennummer">
+			{{form.filtern_seriennummer}}
+  			<label>Seriennummer</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="filtern_kategorie">
+			{{form.filtern_kategorie}}
+  			<label>Produktkategorie</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="filtern_hersteller">
+			{{form.filtern_hersteller}}
+  			<label>Hersteller</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="filtern_lieferant">
+			{{form.filtern_lieferant}}
+  			<label>Lieferant</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="filtern_mwst_klasse">
+			{{form.filtern_mwst_klasse}}
+  			<label>Mehrwertsteuerklasse</label>
+		</div><br>
+		</div><!--column-->
+		
+		</div><!--grid-->
+</div><!--segment-->
+	
+	<div class="ui segment" name="segment_inventur">
+	<h4>Möchten Sie mit Ihrem Warenwirtschaftssystem eine Inventur durchführen können?</h4>
+	<div class="ui two column grid">
+		<div class="column">
+		{% for radio in form.inventur %}
+    				{{ radio}}
+			<br>
+			{% endfor %}
+		</div><!--column-->
+		
+		<div class="column">
+		<h5>Welche Daten zu Ihren Produkten möchten Sie während der Zählung sehen?</h5>
+		
+		<div class="ui tiny list">
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Fabrikat</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">tatsächlicher Lagerbestand</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Gesamtwert (EK x tatsächlichem Lagerbestand)</div>
+			</div>
+		</div> <!-- list-->
+		
+		<div class="ui disabled checkbox" id="inventur_kategorie">
+			{{form.inventur_kategorie}}
+  			<label>Produktkategorie</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="inventur_durchschn_EK">
+			{{form.inventur_durchschn_EK}}
+  			<label>durchschnittlicher Einkaufspreis</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="inventur_letzter_EK">
+			{{form.inventur_letzter_EK}}
+  			<label>letzter Einkaufspreis</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="inventur_bemerkung">
+			{{form.inventur_bemerkung}}
+  			<label>Bemerkung</label>
+		</div><br>
+		</div> <!--column-->
+		
+		</div><!--grid-->
+	</div><!--segment-->
+
+</div><!--Tab Lager -->
+
+<div class="ui tab" data-tab="kunden">
+<div class="ui toggle checkbox" id="kunden">
+  	{{form.kunden}}
+  	<label>Kundenverwaltung aktivieren</label>
+    </div>
+	
+	<div class="ui segment" name="segment_kundenDaten">
+	<h4>Welche Daten möchten Sie zu Ihren Kunden speichern?</h4>
+		
+		<div class="ui tiny horizontal list">
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Nachname</div>
+			</div>
+		</div> <!-- list-->
+	
+	<div class="ui four column grid">	
+	
+		<div class="column">
+		<div class="ui checkbox" id="kunde_vorname">
+			{{form.kunde_vorname}}
+  			<label>Vorname</label>
+		</div><br>
+		<div class="ui checkbox" id="kunde_titel">
+			{{form.kunde_titel}}
+  			<label>Titel</label>
+		</div><br>
+		<div class="ui checkbox" id="kunde_titel">
+			{{form.kunde_organisation}}
+  			<label>Organisation</label>
+		</div><br>
+		<div class="ui checkbox" id="kunde_tel">
+			{{form.kunde_tel}}
+  			<label>Telefon</label>
+		</div><br>
+		</div> <!--column-->
+	
+	<div class="four wide column">
+		<div class="ui checkbox" id="kunde_adresse">
+			{{form.kunde_adresse}}
+  			<label>Adresse</label>
+		</div><br>
+		<div class="ui left floated segment">
+		
+		<div class="ui checkbox" id="kunde_strasse">
+			{{form.kunde_strasse}}
+  			<label>Straße und Hausnummer</label>
+		</div><br>
+		<div class="ui checkbox" id="kunde_plz">
+			{{form.kunde_plz}}
+  			<label>PLZ</label>
+		</div><br>
+		<div class="ui checkbox" id="kunde_stadt">
+			{{form.kunde_stadt}}
+  			<label>Stadt</label>
+		</div>
+		</div> <!--left floated segment-->
+	</div> <!--column-->
+	
+	<div class="four wide column">
+		<div class="ui checkbox" id="kunde_mail">
+			{{form.kunde_mail}}
+  			<label>E-Mail</label>
+		</div><br>
+		<div class="ui checkbox" id="kunde_gruppe">
+			{{form.kunde_gruppe}}
+  			<label>Zuordnung zu Kundengruppen</label>
+		</div><br>
+		<div class="ui checkbox" id="kunde_privat">
+			{{form.kunde_privat}}
+  			<label>Trennung zwischen gewerblichen und privaten Kunden</label>
+		</div><br>
+		</div> <!--column-->
+	
+	<div class="four wide column">
+		<div class="ui checkbox" id="kunde_konto">
+			{{form.kunde_konto}}
+  			<label>Kontodaten</label>
+		</div><br>
+		<div class="ui left floated segment" hidden="hidden" name="kunde_kontodaten">		
+		<div class="ui tiny list">
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Kontonummer/ IBAN</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">Kontoinhaber</div>
+			</div>
+			<div class="item"> <i class="small circular green checkmark icon"></i>
+			<div class="content">BLZ/ BIC</div>
+			</div>
+		</div>
+		</div> <!--left floated segment-->
+		</div> <!--column-->	
+	</div> <!--grid-->
+</div> <!--segment-->
+	
+	<div class="ui segment" name="segment_kundengruppen" hidden="hidden">
+	<h4>Welche Kundengruppen möchten Sie anlegen?</h4>
+	
+	{{ formsetKunde.management_form }}
+    {% for form in formsetKunde.forms %}
+	<div class="ui action input" id="gruppe_0">
+			{{form.name}}
+			<div class="ui icon button" id="plus_gruppen">
+			<i class="plus icon"></i>
+			</div>
+	</div><br>
+	<div id="kundengruppen">
+	</div>
+	{%endfor%}
+	</div><!--segment-->
+	
+	<div class="ui segment" name="segment_kunden_filtern">
+		<h4>Möchten Sie nach Ihren Kunden suchen und filtern können?</h4>
+		
+		<div class="ui two column grid">
+		<div class="four wide column">
+		{% for radio in form.kunde_filtern %}
+    				{{ radio}}
+				<br>
+			{% endfor %}
+		</div><!--column-->
+		
+		<div class="twelve wide column">
+		<h5>Nach welchen Eigenschaften möchten suchen/ filtern?</h5>
+		
+		<div class="ui two column grid">
+		<div class="column">
+		<div class="ui checkbox" id="kunde_filtern_nachname">
+			{{form.kunde_filtern_nachname}}
+  			<label>Nachname</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="kunde_filtern_organisation">
+			{{form.kunde_filtern_organisation}}
+  			<label>Organisation</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="kunde_filtern_plz">
+			{{form.kunde_filtern_plz}}
+  			<label>PLZ</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="kunde_filtern_stadt">
+			{{form.kunde_filtern_stadt}}
+  			<label>Stadt</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="kunde_filtern_gruppe">
+			{{form.kunde_filtern_gruppe}}
+  			<label>Kundengruppen</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="kunde_filtern_privat">
+			{{form.kunde_filtern_privat}}
+  			<label>Trennung zwischen gewerblichen und privaten Kunden</label>
+		</div><br>
+		</div><!--column-->		
+		<div class="column">
+		<div class="ui disabled checkbox" id="kunde_filtern_seriennummer">
+			{{form.kunde_filtern_seriennummer}}
+  			<label>Seriennummer</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="kunde_filtern_fabrikat">
+			{{form.kunde_filtern_fabrikat}}
+  			<label>Fabrikat</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="kunde_filtern_produktkategorie">
+			{{form.kunde_filtern_produktkategorie}}
+  			<label>Produktkategorie</label>
+		</div><br>
+		<div class="ui disabled checkbox" id="kunde_filtern_preisspanne">
+			{{form.kunde_filtern_preisspanne}}
+  			<label>Preisspanne der Käufe</label>
+		</div><br>
+		</div><!--column-->		
+		</div><!--grid-->
+		</div> <!--column-->	
+		</div><!--grid-->
+</div><!--segment-->
+	
+	<div class="ui segment" name="segment_kunden_funktionen">
+		<h4>Welche Funktionen möchten Sie mit Ihren Kundendaten durchführen können?</h4>
+		<div class="ui checkbox" id="kunde_fusionieren">
+			{{form.kunde_fusionieren}}
+  			<label>Fusionieren identischer Kunden (aus Korrekturzwecken)</label>
+		</div><br>
+
+		<div class="ui checkbox" id="kunde_exportieren">
+			{{form.kunde_exportieren}}
+  			<label>Exportieren von Kundendaten (z.B. für Serienbrief)</label>	
+		</div><br>
+</div><!--segment-->
+	
+	<p> <input  type="submit" class="ui right floated blue submit button" name="submit" value="fertig"></div><p>
+</form>
+</div><!-- Tab Kunden -->
+
+</body>
+</html>

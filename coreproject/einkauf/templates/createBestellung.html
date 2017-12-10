@@ -1,0 +1,71 @@
+<meta charset="utf-8" />
+{%extends "base.html"%}
+
+{%block content%}
+<h2>Neue Bestellung</h2>
+<form class="ui form" method="post" action="/einkauf/create/Bestellung/{{lieferant.lieferanten_id}}">
+{%csrf_token%}
+    {%if errors_bestellung or errors_positonen or mindestbestellwert_error %}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in errors_bestellung.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  		  {% for field, errors in errors_positionen.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  	<p>{{mindestbestellwert_error}}</p>
+  </div>
+    {%endif%}
+    
+<div class="ui two column grid">
+<div class="column">
+{{bestellForm.lieferdatum.label_tag}}{{bestellForm.lieferdatum}}
+{{bestellForm.lieferort.label_tag}}{{bestellForm.lieferort}}
+</div>
+<div class="column">
+Lieferant: {{lieferant}}
+</div>
+</div>
+<table class= "ui table" id="positions" >
+<thead>
+<tr>
+ {%for position in positionenForm %}
+{% if forloop.first %}
+{% for field in position%}
+<th>
+{{field.label}}
+</th>
+{%endfor%}
+{%endif%}
+{%endfor%} 
+</tr>
+</thead>
+<tbody>
+{{ positionenForm.management_form }}
+{%for position in positionenForm %}
+<tr id={{forloop.counter0}}>
+{%for field in position%}
+<td>
+{{field}}
+</td>
+{%endfor%}
+</tr>
+{%endfor%}
+</tbody>
+</table> 
+
+<div style="text-align: right">
+{% if lieferant.mindestbestellwert%}
+Mindestbestellwert: {{lieferant.mindestbestellwert}}€<br>
+{%endif%}
+{{bestellForm.summe.label_tag}} {{bestellForm.summe}}<br>
+</div>
+<input class="ui submit button" type="submit" value="speichern">
+</form>
+
+{%endblock%}

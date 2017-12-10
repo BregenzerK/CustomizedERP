@@ -1,0 +1,86 @@
+<meta charset="utf-8" />
+{%extends "base.html"%}
+
+{%block sidebar %}
+<div class="item">Fabrikate anlegen
+<div class="menu">
+{%for model in models%}
+<a class="item" href="/lager/create/{{model}}" target="_blank">{{model}}</a>
+{%endfor%}
+</div>
+</div>
+{%endblock%}
+
+{%block content%}
+<h2>Neues Angebot</h2>
+<form class="ui form" method="post" action="/kunden/{{id}}/create/Angebot">
+{%csrf_token%}
+    {%if errors_offer or errors_positon %}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in errors_offer.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  		  {% for field, errors in errors_position.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  </div>
+    {%endif%}
+    
+{{form.datum.label_tag}} {{form.datum}}
+{{form.standort.label_tag}}{{form.standort}}
+
+<table class= "ui table" id="positions" >
+<thead>
+<tr>
+ {%for position in positionFormset %}
+{% if forloop.first %}
+{% for field in position%}
+<th>
+{{field.label}}
+</th>
+{%endfor%}
+{%endif%}
+{%endfor%} 
+</tr>
+</thead>
+<tbody>
+{{ positionFormset.management_form }}
+{%for position in positionFormset %}
+<tr id={{forloop.counter0}}>
+{%for field in position%}
+{%if forloop.last%}
+<td>
+{{field}}
+<i style="display: none"  class="green checkmark icon"></i>
+<i style="display: none" class="red remove icon"></i> 
+</td>
+{%else%}
+<td>
+{{field}}
+</td>
+{%endif%}
+{%endfor%}
+</tr>
+{%endfor%}
+<tr><td colspan="4" style="text-align: right">Zwischensumme: <input id="zwischensumme" type="number" readonly="readonly"><div class="ui button" id="addPosition"><i class="icon plus"></i>Position</div></td></tr>
+</tbody>
+</table> 
+<div class="ui two column grid">
+<div class="column">
+{{form.rabattgrund.label_tag}}{{form.rabattgrund}}
+</div>
+<div class=column style="text-align: right">
+{{form.rabatt.label_tag}} {{form.rabatt}} {{form.rabattarten}}<br>
+{{form.mehrwertsteuer.label_tag}} {{form.mehrwertsteuer}}<br>
+{{form.summe.label_tag}} {{form.summe}} <br>
+</div>
+</div>
+<input class="ui submit button" type="submit" value="speichern">
+</form>
+
+{%endblock%}

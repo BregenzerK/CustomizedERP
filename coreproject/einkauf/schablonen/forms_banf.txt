@@ -1,0 +1,26 @@
+from einkauf.models import Bestellanforderung, Bestellung
+
+class BanfForm (forms.ModelForm):
+    einkaufspreis_banf= forms.DecimalField(max_digits=10, decimal_places=2, label="Einkaufspreis")
+    summe_banf = forms.DecimalField(max_digits=10, decimal_places=2, label="Summe", widget=forms.NumberInput(attrs={'readonly':'readonly'}))
+    
+    class Meta:
+        model= Bestellanforderung
+        exclude=[ 'bestellt']
+        widgets = {
+                   'fabrikat': forms.TextInput(attrs={'readonly':'readonly'}),
+                   }
+        
+class BanfOverviewForm (forms.ModelForm):   
+    class Meta:
+        model= Bestellanforderung
+        exclude=[ 'bestellt']
+
+class BestellForm (forms.ModelForm):
+    class Meta:
+        model= Bestellung
+        exclude=['bestellposition', 'status']
+        widgets = {
+                   'summe': forms.NumberInput(attrs={'readonly':'readonly'}),
+                   }
+        

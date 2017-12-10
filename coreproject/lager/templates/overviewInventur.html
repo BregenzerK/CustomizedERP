@@ -1,0 +1,30 @@
+{%extends "base.html" %}
+
+
+{%block sidebar %}
+<a class="item" href="/lager/inventurliste">komplette Inventurliste generieren</a>
+{%endblock %}
+
+
+{%block content %}
+<h2>Inventuren</h2>
+{% for inventur in inventuren %}
+<div class="ui segment">
+<div class="ui two column grid">
+<div class="column">
+{{inventur.datum}}
+<ul>
+{%for pos in inventur.position.all%}
+<li>{{pos.produkt}}</li>
+{%endfor%}
+</ul>
+</div>
+<div class="column" style="text-align: right">
+<div class="ui button"><a href="/lager/inventur/{{inventur.inventur_id}}/auswerten">Auswertung</a></div>
+<div class="ui button"><a href="/lager/inventur/{{inventur.inventur_id}}/drucken">Inventurliste drucken</a></div>
+</div>
+
+</div>
+</div>
+{%endfor%}
+{%endblock%}

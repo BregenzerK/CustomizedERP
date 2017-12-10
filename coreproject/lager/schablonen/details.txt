@@ -1,0 +1,2 @@
+    if model == 'PRODUKT':
+        form = PRODUKTForm

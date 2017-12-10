@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurator>
+	
+	<rule>
+		<if>einkauf</if>
+		<then>
+			<check>lager</check>
+			
+			<uncheck>bestellung</uncheck>
+			<uncheck>bedarf</uncheck>
+			<invisible>segment_bestellung_intern</invisible>
+			<invisible>segment_bestellung_extern</invisible>
+			<invisible>segment_bestellungDaten</invisible>
+			<invisible>segment_bestellungBelege</invisible>
+			<invisible>segment_scanner</invisible>
+			<invisible>segment_bestellungBezahlung</invisible>
+			<invisible>segment_lieferantDaten</invisible>
+		</then>
+	</rule>
+	
+	<rule>
+		<if>bedarf</if>
+
+		<then>
+			<visible>segment_bestellung_intern</visible>
+			<visible>segment_bestellung_extern</visible>
+			<visible>segment_lieferantDaten</visible>
+			<visible>segment_bestellungDaten</visible>
+			<visible>segment_bestellungBelege</visible>
+			<visible>segment_scanner</visible>
+			<visible>segment_bestellungBezahlung</visible>
+			
+			<check>lager</check>
+			<check>einkauf</check>
+			<check>kauf</check>
+			<check>bestellung</check>
+			<check>form-0-lieferant</check>
+			
+			<uncheck>lieferant_mindestbestellwert</uncheck>
+		
+		</then>	
+	</rule>
+	
+	<rule>
+		<if>bestellung</if>
+			<and value="false">bedarf</and>
+			
+		<then>
+			<visible>segment_bestellung_intern</visible>
+			<visible>segment_bestellung_extern</visible>
+			<visible>segment_lieferantDaten</visible>
+			<visible>segment_bestellungDaten</visible>
+			<visible>segment_bestellungBelege</visible>
+			<visible>segment_scanner</visible>
+			<visible>segment_bestellungBezahlung</visible>
+			
+			<check>einkauf</check>
+			<check>lager</check>
+			<check>form-0-lieferant</check>
+			<uncheck>bedarf</uncheck>
+			
+			<invisible>segment_bestellung_intern</invisible>
+			<invisible>segment_bestellung_extern</invisible>
+			<invisible>segment_bestellungDaten</invisible>
+			<invisible>segment_bestellungBelege</invisible>
+			<invisible>segment_scanner</invisible>
+			<invisible>segment_bestellungBezahlung</invisible>
+			<invisible>segment_lieferantDaten</invisible>
+			
+			<and_uncheck>einkauf</and_uncheck>
+			<and_uncheck>lager</and_uncheck>
+
+		</then>	
+	</rule>
+	
+	<rule>
+		<if>lieferant_mindestbestellwert</if>
+		<then>
+			<check>bedarf</check>
+		</then>	
+	</rule>
+	
+	<rule>
+		<if>lieferant_konto</if>
+		<then>
+			<visible>lieferant_kontodaten</visible>
+			<invisible>lieferant_kontodaten</invisible>
+		</then>	
+	</rule>
+	
+	<rule>
+		<if>lieferant_adresse</if>
+		<then>
+			<check>lieferant_strasse</check>
+			<check>lieferant_plz</check>
+			<check>lieferant_stadt</check>
+			
+			<uncheck>lieferant_strasse</uncheck>
+			<uncheck>lieferant_plz</uncheck>
+			<uncheck>lieferant_stadt</uncheck>
+		</then>	
+	</rule>
+	
+	<rule>
+		<if>bezahlung</if>
+		<then>
+			<check>lieferant_konto</check>	
+		</then>
+	</rule>
+	
+	<rule>
+		<if>scanner</if>
+		<and value="true">kauf</and>
+		<then>
+		<check>form-0-ean_nummer</check>
+		<uncheck>form-0-ean_nummer</uncheck>
+		<and_check>scanner_kauf</and_check>
+		</then>
+	</rule>
+	
+	<!-- Ende Einkauf -->
+	<rule>
+		<if>kauf</if>
+			<and>form-0-produktkategorie</and>
+		<then>
+				<check>kaufabschluss</check>
+				<check>lager</check>
+				<check>kunden</check>
+				<visible>segment_kauf</visible>
+				<visible>segment_kauffunktionen</visible>
+				<visible>segment_scanner_kauf</visible>
+				<visible>segment_zahlung</visible>
+				<enable>kunde_filtern_preisspanne</enable>
+				<enable>kunde_filtern_seriennummer</enable>		
+				<enable>kunde_filtern_fabrikat</enable>
+				
+				<and_enable>kunde_filtern_produktkategorie</and_enable>
+
+				<uncheck>kaufabschluss</uncheck>
+				<uncheck>angebot</uncheck>
+				<disable>kunde_filtern_preisspanne</disable>
+				<disable>kunde_filtern_seriennummer</disable>
+				<disable>kunde_filtern_fabrikat</disable>
+				<disable>kunde_filtern_produktkategorie</disable>
+				<invisible>segment_angebotDaten</invisible>
+				<invisible>segment_kauf</invisible>
+				<invisible>segment_kauffunktionen</invisible>
+				<invisible>segment_scanner_kauf</invisible>
+				<invisible>segment_zahlung</invisible>
+		</then>
+	</rule>
+	
+	<rule>
+		<if>angebot</if>
+			<and value="false">kaufabschluss</and>
+		<then>
+			<check>kauf</check>
+			<check>lager</check>
+			<check>kunden</check>
+			<check>kaufabschluss</check>
+			<visible>segment_angebotDaten</visible>
+			<visible>segment_kauf</visible>
+			<visible>segment_kauffunktionen</visible>
+			<visible>segment_scanner_kauf</visible>
+			<visible>segment_zahlung</visible>
+			
+			<and_uncheck>kauf</and_uncheck>
+			<and_uncheck>lager</and_uncheck>
+			<and_uncheck>kunden</and_uncheck>
+			<invisible>segment_angebotDaten</invisible>
+			<and_invisible>segment_kauf</and_invisible>
+			<and_invisible>segment_kauffunktionen</and_invisible>
+			<and_invisible>segment_scanner_kauf</and_invisible>
+			<and_invisible>segment_zahlung</and_invisible>
+		
+		</then>
+	</rule>
+	
+	<rule>
+		<if>kaufabschluss</if>
+			<and value="false">angebot</and>
+		<then>
+			<check>kauf</check>
+			<check>lager</check>
+			<check>kunden</check>
+			<uncheck>angebot</uncheck>
+			<visible>segment_kauf</visible>
+			<visible>segment_kauffunktionen</visible>
+			<visible>segment_scanner_kauf</visible>
+			<visible>segment_zahlung</visible>
+			
+			<and_uncheck>kauf</and_uncheck>
+			<and_uncheck>lager</and_uncheck>
+			<and_uncheck>kunden</and_uncheck>
+			<invisible>segment_angebotDaten</invisible>
+			<invisible>segment_kauf</invisible>
+			<invisible>segment_kauffunktionen</invisible>
+			<invisible>segment_scanner_kauf</invisible>
+			<invisible>segment_zahlung</invisible>
+		
+		</then>
+	</rule>
+	
+	<rule>
+		<if>kauf_rabattgrund</if>
+		<then>
+		<check>kauf_rabatt</check>
+		</then>
+	</rule>
+	
+	<rule>
+		<if>kauf_rabatt</if>
+		
+		<then>
+		<check>kauf_prozentrabatt</check>
+		<check>kauf_betragsrabatt</check>
+		
+		<uncheck>kauf_prozentrabatt</uncheck>
+		<uncheck>kauf_betragsrabatt</uncheck>
+		
+		</then>
+	</rule>
+	
+	<rule>
+		<if>kauf_prozentrabatt</if>
+			<and>kauf_betragsrabatt</and>
+			
+		<then>
+			<and_uncheck>kauf_rabatt</and_uncheck>
+			<and_check>kauf_rabatt</and_check>
+		
+		</then>
+	
+	</rule>
+	
+	<rule>
+		<if>kauf_betragsrabatt</if>
+			<and>kauf_prozentrabatt</and>
+			
+		<then>
+			<and_uncheck>kauf_rabatt</and_uncheck>
+			<and_check>kauf_rabatt</and_check>
+		
+		</then>
+	
+	</rule>
+	
+	<rule>
+		<if>angebot_rabattgrund</if>
+		<then>
+		<check>angebot_rabatt</check>
+		</then>
+	</rule>
+	<rule>
+		<if>angebot_rabatt</if>
+		
+		<then>
+		<check>angebot_prozentrabatt</check>
+		<check>angebot_betragsrabatt</check>
+		
+		<uncheck>angebot_prozentrabatt</uncheck>
+		<uncheck>angebot_betragsrabatt</uncheck>
+		
+		</then>
+	</rule>
+	
+	<rule>
+		<if>angebot_prozentrabatt</if>
+			<and>angebot_betragsrabatt</and>
+			
+		<then>
+			<and_uncheck>angebot_rabatt</and_uncheck>
+			<and_check>angebot_rabatt</and_check>
+		
+		</then>
+	
+	</rule>
+	
+	<rule>
+		<if>angebot_betragsrabatt</if>
+			<and>angebot_prozentrabatt</and>
+			
+		<then>
+			<and_uncheck>angebot_rabatt</and_uncheck>
+			<and_check>angebot_rabatt</and_check>
+		
+		</then>
+	
+	</rule>
+	
+	<rule>
+		<if>angebotUmwandeln</if>
+		
+		<then>
+			<check>angebot</check>
+			<visible>segment_angebotDaten</visible>
+		
+		</then>
+	</rule>
+	
+	<rule>
+		<if>scanner_kauf</if>
+		<then>
+		<check>form-0-ean_nummer</check>
+		<uncheck>form-0-ean_nummer</uncheck>
+		
+		</then>
+	</rule>
+	
+	<rule>
+		<if>zahlung</if>
+		<then>
+			<check>zahlart_raten</check>
+			<check>zahlart_kreditkarte</check>
+			
+			<uncheck>zahlart_raten</uncheck>
+			<uncheck>zahlart_kreditkarte</uncheck>
+			
+			<check>kunde_konto</check>
+			<uncheck>kunde_konto</uncheck>
+			
+			<visible>kunde_kontodaten</visible>
+			<invisible>kunde_kontodaten</invisible>
+		
+		</then>
+	
+	</rule>
+	<rule>
+	<if>zahlart_raten</if>
+		<and value="false">zahlart_kreditkarte</and>
+	<then>
+		<check>zahlung</check>
+		<and_uncheck>zahlung</and_uncheck>	
+	</then>
+	</rule>
+	
+		<rule>
+	<if>zahlart_kreditkarte</if>
+		<and value="false">zahlart_raten</and>
+	<then>
+		<check>zahlung</check>
+		<and_uncheck>zahlung</and_uncheck>	
+	</then>
+	</rule>
+	
+<!-- Ende Kauf -->
+	<rule>
+		<if>lager</if>
+		<then>
+			<uncheck>segment_produkttypen</uncheck>
+			<uncheck>segment_lieferantDaten_lager</uncheck>
+			<uncheck>segment_lager_filtern</uncheck>
+			<uncheck>segment_inventur</uncheck>
+			
+			<invisible>segment_produktkategorien</invisible>
+		</then>
+	</rule>
+
+	<rule>
+		<if>form-0-lieferant</if>
+			<and value='false'>einkauf</and>
+		<then>
+		<invisible>segment_lieferantDaten_lager</invisible>
+		<and_visible>segment_lieferantDaten_lager</and_visible>
+		<enable>filtern_lieferant</enable>
+		<disable>filtern_lieferant</disable>		
+		</then>
+	</rule>
+	
+	<rule>
+		<if>form-0-produktkategorie</if>
+			<and>kauf</and>
+		<then>
+			<visible>segment_produktkategorien</visible>
+			<invisible>segment_produktkategorien</invisible>
+			<enable>filtern_kategorie</enable>
+			<disable>filtern_kategorie</disable>
+			<enable>inventur_kategorie</enable>
+			<disable>inventur_kategorie</disable>
+			<disable>kunde_filtern_produktkategorie</disable>
+			
+			<and_enable>kunde_filtern_produktkategorie</and_enable>
+			
+		</then>
+	</rule>
+	
+	<rule>
+	<if>form-0-hersteller</if>
+	<then>
+	<enable>filtern_hersteller</enable>
+	<disable>filtern_hersteller</disable>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>form-0-mwst_klasse</if>
+	<then>
+	<enable>filtern_mwst_klasse</enable>
+	<disable>filtern_mwst_klasse</disable>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>form-0-durchschn_EK</if>
+	<then>
+	<enable>inventur_durchschn_EK</enable>
+	<disable>inventur_durchschn_EK</disable>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>form-0-letzter_EK</if>
+	<then>
+	<enable>inventur_letzter_EK</enable>
+	<disable>inventur_letzter_EK</disable>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>form-0-bemerkung</if>
+	<then>
+	<enable>inventur_bemerkung</enable>
+	<disable>inventur_bemerkung</disable>
+	</then>
+	</rule>
+	
+	<rule>
+		<if>lager_lieferant_konto</if>
+		<then>
+			<visible>lager_lieferant_kontodaten</visible>
+			<invisible>lager_lieferant_kontodaten</invisible>
+		</then>	
+	</rule>
+	
+	<rule>
+		<if>lager_lieferant_adresse</if>
+		<then>
+			<check>lager_lieferant_strasse</check>
+			<check>lager_lieferant_plz</check>
+			<check>lager_lieferant_stadt</check>
+			
+			<uncheck>lager_lieferant_strasse</uncheck>
+			<uncheck>lager_lieferant_plz</uncheck>
+			<uncheck>lager_lieferant_stadt</uncheck>
+		</then>	
+	</rule>
+	
+	<rule>
+		<if>filtern</if>
+		<then>
+		<uncheck>filtern_fabrikat</uncheck>
+		<uncheck>filtern_seriennummer</uncheck>
+		<uncheck>filtern_kategorie</uncheck>
+		<uncheck>filtern_hersteller</uncheck>
+		<uncheck>filtern_lieferant</uncheck>
+		<uncheck>filtern_mwst_klasse</uncheck>
+		</then>
+	
+	</rule>
+	
+	<rule>
+	<if>filtern_fabrikat</if>
+	<then>
+	<check>filtern</check>
+	</then>	
+	</rule>
+	
+	<rule>
+	<if>filtern_seriennummer</if>
+	<then>
+	<check>filtern</check>
+	</then>	
+	</rule>
+	
+	<rule>
+	<if>filtern_kategorie</if>
+	<then>
+	<check>filtern</check>
+	</then>	
+	</rule>
+	
+	<rule>
+	<if>filtern_hersteller</if>
+	<then>
+	<check>filtern</check>
+	</then>	
+	</rule>
+	
+	<rule>
+	<if>filtern_lieferant</if>
+	<then>
+	<check>filtern</check>
+	</then>	
+	</rule>
+	
+	<rule>
+	<if>filtern_mwst_klasse</if>
+	<then>
+	<check>filtern</check>
+	</then>	
+	</rule>
+	
+	<rule>
+	<if>inventur</if>
+	<then>
+	<uncheck>inventur_kategorie</uncheck>
+	<uncheck>inventur_durchschn_EK</uncheck>
+	<uncheck>inventur_letzter_EK</uncheck>
+	<uncheck>inventur_bemerkung</uncheck>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>inventur_kategorie</if>
+	<then>
+	<check>inventur</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>inventur_durchschn_EK</if>
+	<then>
+	<check>inventur</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>inventur_letzter_EK</if>
+	<then>
+	<check>inventur</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>inventur_bemerkung</if>
+	<then>
+	<check>inventur</check>
+	</then>
+	</rule>
+	
+<!-- Ende Lager-->
+	<rule>
+		<if>kunden</if>
+		<then>
+			<uncheck>segment_kundenDaten</uncheck>
+			<uncheck>segment_kunden_filtern</uncheck>
+			<uncheck>segment_kunden_funktionen</uncheck>
+			<invisible>segment_kundengruppen</invisible>
+		</then>
+	</rule>
+
+	<rule>
+		<if>kunde_konto</if>
+		<then>
+			<visible>kunde_kontodaten</visible>
+			<invisible>kunde_kontodaten</invisible>
+			<uncheck>zahlung</uncheck>
+		</then>	
+	</rule>
+	
+	<rule>
+		<if>kunde_adresse</if>
+		<then>
+			<check>kunde_strasse</check>
+			<check>kunde_plz</check>
+			<check>kunde_stadt</check>
+			
+			<uncheck>kunde_strasse</uncheck>
+			<uncheck>kunde_plz</uncheck>
+			<uncheck>kunde_stadt</uncheck>
+		</then>	
+	</rule>
+	
+	<rule>
+	<if>kunde_organisation</if>
+	<then>
+	<disable>kunde_filtern_organisation</disable>
+	<enable>kunde_filtern_organisation</enable>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_plz</if>
+	<then>
+	<enable>kunde_filtern_plz</enable>
+	<disable>kunde_filtern_plz</disable>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_stadt</if>
+	<then>
+	<enable>kunde_filtern_stadt</enable>
+	<disable>kunde_filtern_stadt</disable>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_privat</if>
+	<then>
+	<enable>kunde_filtern_privat</enable>
+	<disable>kunde_filtern_privat</disable>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_gruppe</if>
+	<then>
+	<visible>segment_kundengruppen</visible>
+	<invisible>segment_kundengruppen</invisible>
+	<disable>kunde_filtern_gruppe</disable>
+	<enable>kunde_filtern_gruppe</enable>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern</if>
+	<then>
+	<uncheck>kunde_filtern_nachname</uncheck>
+	<uncheck>kunde_filtern_organisation</uncheck>
+	<uncheck>kunde_filtern_plz</uncheck>
+	<uncheck>kunde_filtern_stadt</uncheck>
+	<uncheck>kunde_filtern_gruppe</uncheck>
+	<uncheck>kunde_filtern_privat</uncheck>
+	<uncheck>kunde_filtern_seriennummer</uncheck>
+	<uncheck>kunde_filtern_fabrikat</uncheck>
+	<uncheck>kunde_filtern_produktkategorie</uncheck>
+	<uncheck>kunde_filtern_preisspanne</uncheck>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern_nachname</if>
+	<then>
+	<check>kunde_filtern</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern_organisation</if>
+	<then>
+	<check>kunde_filtern</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern_plz</if>
+	<then>
+	<check>kunde_filtern</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern_stadt</if>
+	<then>
+	<check>kunde_filtern</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern_gruppe</if>
+	<then>
+	<check>kunde_filtern</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern_privat</if>
+	<then>
+	<check>kunde_filtern</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern_seriennummer</if>
+	<then>
+	<check>kunde_filtern</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern_fabrikat</if>
+	<then>
+	<check>kunde_filtern</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern_produktkategorie</if>
+	<then>
+	<check>kunde_filtern</check>
+	</then>
+	</rule>
+	
+	<rule>
+	<if>kunde_filtern_preisspanne</if>
+	<then>
+	<check>kunde_filtern</check>
+	</then>
+	</rule>
+
+<!-- Ende Kunden-->
+	
+</configurator>

@@ -1,0 +1,25 @@
+{%extends "base.html"%}
+
+
+{%block content%}
+<h2>Fabrikat: {{produkt.fabrikat.data}}</h2>
+<form class='ui form' action="/lager/{{model}}/{{id}}/Details"  method="post">
+
+{% csrf_token %}
+    {%if errors %}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in errors.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  </div>
+    {%endif%}
+<table>
+{{produkt.as_table}}
+</table>
+<p><input class="ui submit button" type="submit" value="speichern"></p>
+</form>
+
+{%endblock%}

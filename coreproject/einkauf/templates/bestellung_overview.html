@@ -1,0 +1,52 @@
+<meta charset="utf-8" />
+{%extends "base.html"%}
+
+{%block content%}
+<h2>Bestellungen</h2>
+<h4 class="ui horizontal header divider">Offene Bestellungen</h4>
+{%for lieferant, bestellungen in bestellungen_l.items%}
+{%for bestellung in bestellungen.itervalues%}
+{%if bestellung.status_offen == True%}
+<div class="ui segment">
+<div class="ui two column grid">
+<div class="column">
+<b>Lieferant: {{lieferant.firmenname}}</b><br>
+{{bestellung.lieferort}} {{bestellung.lieferdatum}}<br>
+{% for pos in bestellung.bestellposition.all %}
+{{pos.fabrikat}}: {{pos.menge}} Mal<br>
+{%endfor%}
+<b>Summe: {{bestellung.summe}}€</b>
+</div>
+<div class="column" style="text-align: right">
+{%include "bestellungOptions.html"%}
+</div>
+</div>
+</div>
+{%endif%}
+{%endfor%}
+{%endfor%}
+
+<h4 class="ui horizontal header divider">Geschlossene Bestellungen</h4>
+{%for lieferant, bestellungen in bestellungen_l.items%}
+{%for bestellung in bestellungen.itervalues%}
+{%if bestellung.status_offen == False%}
+<div class="ui segment">
+<div class="ui two column grid">
+<div class="column">
+<b>Lieferant: {{lieferant.firmenname}}</b><br>
+{{bestellung.lieferort}} {{bestellung.lieferdatum}}<br>
+{% for pos in bestellung.bestellposition.all %}
+{{pos.fabrikat}}: {{pos.menge}} Mal<br>
+{%endfor%}
+<b>Summe: {{bestellung.summe}}€</b>
+</div>
+<div class="column" style="text-align: right">
+<div class="ui button"><a href="/einkauf/Bestellung/{{bestellung.bestell_id}}/upload">Dokument hochladen</a></div>
+<div class="ui button"><a href="/einkauf/Bestellung/{{bestellung.bestell_id}}/Details">Details</a></div></p>
+</div>
+</div>
+</div>
+{%endif%}
+{%endfor%}
+{%endfor%}
+{%endblock%}

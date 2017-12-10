@@ -1,0 +1,65 @@
+<meta charset="utf-8" />
+{%extends "base.html" %}
+
+
+{%block sidebar %}
+<div class="item">Fabrikate anlegen
+<div class="menu">
+{%for model in produkte.iterkeys%}
+<a class="item" href="/lager/create/{{model}}">{{model}}</a>
+{%endfor%}
+</div>
+</div>
+{% include "sidebar_overviewProdukte.html" %}
+{%endblock %}
+
+
+{%block content %}
+<h2>Produktübersicht</h2>
+{%include "filterProdukte.html" %}
+
+<table class= "ui table" id="overview">
+<thead>
+<tr>
+<th></th>
+{%for model, value in produkte.items %}
+{%if forloop.first%}
+{%for id, artikel in value.items %}
+{%if forloop.first%}
+{% for field in artikel%}
+<th>
+{{field.label}}
+</th>
+{%endfor%}
+{%endif%}
+
+{%endfor%}
+{%endif%}
+{%endfor%}
+</tr>
+</thead>
+
+<tbody>
+{%for model, value in produkte.items %}
+{%for id, artikel in value.items %}
+<tr href="/lager/{{model}}/{{id}}/Details">
+<td><div class="ui checkbox"><input type="checkbox" checked="checked" id={{id}}><label></label></div></td>
+
+{%for field in artikel %}
+<td>
+
+{{field.data}}
+
+</td>
+{%endfor%}
+</tr>
+
+{%endfor%}
+{%endfor%}
+</tbody>
+
+</tbody>
+</table> 
+
+
+{%endblock %}

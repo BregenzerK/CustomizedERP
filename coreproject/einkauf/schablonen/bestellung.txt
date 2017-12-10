@@ -1,0 +1,141 @@
+from einkauf.models import Bestellung, Bestellposition
+from einkauf.forms import BestellForm, WarenpositionDetailForm, BestellpositionForm
+from django.forms.models import model_to_dict
+import json
+
+def create_bestellung_without_banf(request):
+    lieferanten = Lieferant.objects.all()
+    formsetPosition = formset_factory(BestellpositionForm)
+    errors=""
+    errors_position =""
+    models=[]
+    
+    for produkt in Produkt.objects.all().select_subclasses():
+        model = produkt.to_class_name()
+        if model not in models:
+            models.append(model)
+    if request.POST:
+        formBestellung=BestellForm(request.POST)
+        positionenFormset = formsetPosition(request.POST, request.FILES)
+        if positionenFormset.is_valid() and formBestellung.is_valid():
+            bestellung = formBestellung.save()
+            for form in positionenFormset:
+                fabrikat = form.cleaned_data['produkt_bestellung']
+                fabrikat = Produkt.objects.filter(fabrikat=fabrikat).select_subclasses()[0]
+                menge = form.cleaned_data['anzahl_bestellung']
+                position = Bestellposition(fabrikat=fabrikat.fabrikat, menge=menge)
+                position.save()
+                bestellung.bestellposition.add(position)
+                fabrikat.EK = form.cleaned_data['einkaufspreis_bestellung']
+                fabrikat.save()
+            bestellung.status_offen=True
+            bestellung.save()
+            return HttpResponseRedirect('/einkauf/Bestellung/overview')
+        else:
+            errors = formBestellung.errors
+            errors_position=positionenFormset
+    else:
+        positionenFormset=formsetPosition()
+        formBestellung= BestellForm
+
+    c={
+       'form': formBestellung,
+       'positionFormset': positionenFormset,
+       'errors': errors,
+       'errors_position': errors_position,
+       'models': models,
+       'lieferanten': lieferanten
+       }
+    c.update(csrf(request))    
+    return render_to_response('createBestellung_withoutBanf.html', c)
+    
+def show_bestellung_overview(request):
+    bestellungen = Bestellung.objects.all().order_by('-bestell_id')
+    bestellungen_l ={}
+    for bestellung in bestellungen:
+        fabrikat = bestellung.bestellposition.all()[0].fabrikat
+        fabrikat = Produkt.objects.filter(fabrikat=fabrikat).select_subclasses()[0]
+        bestellungen_l[fabrikat.lieferant]={}
+    
+    for bestellung in bestellungen:
+        fabrikat = bestellung.bestellposition.all()[0].fabrikat
+        fabrikat = Produkt.objects.filter(fabrikat=fabrikat).select_subclasses()[0]
+        bestellungen_l[fabrikat.lieferant][bestellung.bestell_id]=bestellung
+    
+    c={
+       'bestellungen_l': bestellungen_l,
+       }
+    
+    return render_to_response('bestellung_overview.html', c)
+    
+def show_details_bestellung(request, bestell_id):
+    bestellung = Bestellung.objects.get(bestell_id=bestell_id)
+    
+    formset = formset_factory(WarenpositionDetailForm)
+    
+    if request.POST:
+        positionenForm = formset(request.POST, request.FILES)
+        positionen=[]
+        for position in bestellung.bestellposition.all():
+            positionen.append(position)
+        counter=0;
+        for form in positionenForm:
+            bestellposition = positionen[counter]
+            if 'checked' in str(form['erhalten']) and bestellposition.erhalten==False:
+                bestellposition.erhalten = True
+                bestellposition.save()
+                fabrikat = Produkt.objects.filter(fabrikat=bestellposition.fabrikat).select_subclasses()[0]
+                #NICHT VORRAETIGE PRODUKTE  
+                
+                fabrikat.lagerbestand+= bestellposition.menge 
+                fabrikat.save()
+            counter+=1
+        
+        return HttpResponseRedirect('/einkauf/Bestellung/overview')
+                    
+    else:
+        initial={
+                 'form-TOTAL_FORMS': len(bestellung.bestellposition.all()),
+                 'form-INITIAL_FORMS': len(bestellung.bestellposition.all()),
+                 'form-MAX_NUM_FORMS': len(bestellung.bestellposition.all()),
+                 }
+        counter=0;
+        for position in bestellung.bestellposition.all():
+            produkt = Produkt.objects.filter(fabrikat=position.fabrikat).select_subclasses()[0]
+
+            initial['form-'+str(counter)+'-produkt']= produkt.fabrikat
+            initial['form-'+str(counter)+'-anzahl']= position.menge
+            initial['form-'+str(counter)+'-einkaufspreis']=produkt.EK
+            initial['form-'+str(counter)+'-summe']=position.menge*produkt.EK
+            initial['form-'+str(counter)+'-erhalten']=position.erhalten
+            counter+=1
+            lieferant = produkt.lieferant
+            
+        bestellung = BestellForm(data=model_to_dict(bestellung))
+        positionenForm=formset(data=initial)
+        c={
+           'bestellung':bestellung,
+           'positionen': positionenForm,
+           'id': bestell_id,
+           'lieferant': lieferant,
+           }
+        c.update(csrf(request))
+        return render_to_response('bestellung_Details.html', c)
+        
+def close_bestellung(request, bestell_id):
+    bestellung = Bestellung.objects.get(bestell_id=bestell_id)
+    bestellung.status_offen =False
+    bestellung.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
+def get_produkte_zu_lieferant(request):
+    lieferant = request.GET['lieferant']
+    lieferant = Lieferant.objects.filter(firmenname=lieferant)[0]
+    p = Produkt.objects.all().select_subclasses()
+    produkte={}
+    for produkt in p:
+        if produkt.lieferant == lieferant:
+            produkte[produkt.fabrikats_id]=produkt.fabrikat
+
+    produkte = json.dumps(produkte, ensure_ascii=False)
+    return HttpResponse(produkte,content_type='application/json')

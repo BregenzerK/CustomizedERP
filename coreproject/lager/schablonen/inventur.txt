@@ -1,0 +1,78 @@
+def inventur_overview (request):
+    inventuren = Inventur.objects.all()
+    
+    c={
+       'inventuren': inventuren
+       }
+    
+    return render_to_response('overviewInventur.html', c)
+'''
+def generate_inventurliste(request):
+
+    products = request.GET.getlist('products[]')
+    produkte=[]
+    for produkt in products:
+        produkte.append(Produkt.objects.get_subclass(fabrikats_id=produkt))
+    print produkte
+    
+    return show_inventurliste(request, products)
+'''
+def show_inventurliste (request, product_id=None):
+    produkte=[]
+    if product_id is not None:
+        p = product_id.split('/')
+        for produkt in p:
+            produkte.append(Produkt.objects.get_subclass(fabrikats_id=p))
+    else:
+        produkte=Produkt.objects.all().select_subclasses()
+            
+    InventurFormset = formset_factory(InventurForm, min_num=len(produkte))
+    
+    if request.POST:
+        inventur_formset = InventurFormset(request.POST, request.FILES)
+        if inventur_formset.is_valid():
+            inventur = Inventur()
+            inventur.save()
+            for form in inventur_formset:
+                position = form.save()
+                inventur.position.add(position)
+                produkt = Produkt.objects.filter(fabrikat=form.cleaned_data['produkt']).select_subclasses()[0]
+                produkt.EK = form.cleaned_data['EK']
+                produkt.save()
+                
+            inventur.save()
+            
+            return HttpResponseRedirect('/lager/inventur/overview')
+        else:
+            print inventur_formset.errors
+    else:
+        inventur_formset = InventurFormset 
+
+    initial={
+             'form-TOTAL_FORMS': len(produkte),
+              'form-INITIAL_FORMS': len(produkte),
+              'form-MAX_NUM_FORMS': len(produkte),
+             }
+    counter=0;
+    for produkt in produkte:
+        initial['form-'+str(counter)+'-produkt']= produkt.fabrikat
+        initial['form-'+str(counter)+'-EK']= produkt.EK
+        initial['form-'+str(counter)+'-gesamtwert']= produkt.EK
+        counter+=1
+        
+    inventur_formset = InventurFormset(data=initial)
+    
+    c={
+       'inventurFormset': inventur_formset,
+       }
+
+    c.update(csrf(request))
+    return render_to_response('inventurliste.html', c)
+
+def inventur_ausdrucken(request, inventur_id):
+    
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def inventur_auswerten(request, inventur_id):
+    
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

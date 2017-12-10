@@ -1,0 +1,23 @@
+from django.shortcuts import render_to_response
+from kunden.forms import KundenForm
+from django.http.response import HttpResponseRedirect
+from django.core.context_processors import csrf
+from kunden.models import Kunde
+from django.forms.models import model_to_dict
+
+# Create your views here.
+
+#CREATE
+
+#OVERVIEW
+
+#DETAILS
+        
+
+def merge(request):
+    
+    return HttpResponseRedirect('/kunden/overview')
+
+def export(request):
+    
+    return HttpResponseRedirect('/kunden/overview')

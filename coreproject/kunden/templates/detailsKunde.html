@@ -1,0 +1,45 @@
+{%extends "base.html"%}
+
+{%block sidebar%}
+{%include "sidebar_detailsKunde.html"%}
+{%endblock%}
+
+
+{%block content%}
+<h2>Kunde: {{kunde.nachname.data}}</h2>
+<form class='ui form' action="/kunden/{{id}}/Details"  method="post">
+
+{% csrf_token %}
+    {%if errors or errors_konto %}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in errors.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  	
+  		  {% for field, errors in errors_konto.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  </div>
+    {%endif%}
+<div class="ui two column grid">
+<div class="column">
+<table>
+{{kunde.as_table}}
+</table>
+</div>    
+<div class="column">
+<table>
+{{konto.as_table}}
+</table>
+</div>
+
+</div>
+<p><input class="ui submit button" type="submit" value="speichern"></p>
+</form>
+
+{%endblock%}

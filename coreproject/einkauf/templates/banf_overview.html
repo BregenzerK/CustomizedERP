@@ -1,0 +1,24 @@
+{%extends "base.html"%}
+<meta charset="utf-8" />
+
+{%block content %}
+<h2>Offene Bestellanforderungen</h2>
+{%for lieferant, value in lieferanten.items%}
+<h5>{{lieferant}}</h5>
+<p><div class="ui button"><a href="/einkauf/create/Bestellung/{{lieferant.lieferanten_id}}">Bestellung aufgeben</a></div></p>
+{%for id, banf in value.items%}
+ <div class="ui segment">
+{%for field in banf %}
+{{field.label_tag}} {{field.data}}<br>
+{%endfor%}
+<div style="text-align: right">
+<div class="ui button"><a href="/einkauf/Bestellanforderung/{{id}}">bearbeiten</a></div>
+</div>
+</div>
+{%endfor%}
+{%empty%}
+<p>Aktuell keine offenen Bestellanforderungen</p>
+
+{%endfor%}
+
+{%endblock%}

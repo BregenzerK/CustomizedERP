@@ -1,0 +1,7 @@
+				if fabrikat.lagerbestand==0:
+                    #nicht vorraetigen Produkte
+                    kaufe = Kauf.objects.filter(abgeschlossen=False).filter(warenposition__fabrikat=fabrikat)
+                    for kauf in kaufe:
+                        mitteilung = MitteilungKauf(kauf=kauf, nachricht=str(fabrikat.fabrikat)+" kam an")
+                        mitteilung.save()
+                    

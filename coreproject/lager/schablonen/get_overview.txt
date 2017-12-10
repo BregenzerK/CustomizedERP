@@ -1,0 +1,19 @@
+def get_overview (request):
+    
+    produkte={}
+    
+    for produkt in Produkt.objects.all().select_subclasses():
+        model = produkt.to_class_name()
+        produkte[model]={}
+        
+    for produkt in Produkt.objects.all().select_subclasses():
+        model = produkt.to_class_name()
+        produkte[model][produkt.fabrikats_id] = ProduktOverviewForm(data=model_to_dict(produkt))
+    
+    c={
+       'produkte': produkte
+              }
+    c.update(csrf(request))
+    
+    return render_to_response('overviewProdukte.html', c)
+  

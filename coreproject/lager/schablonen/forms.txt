@@ -1,0 +1,7 @@
+from django import forms
+from lager.models import Produkt
+
+class ProduktOverviewForm (forms.ModelForm):
+    class Meta:
+        model= Produkt
+        exclude=['seriennummer', ]

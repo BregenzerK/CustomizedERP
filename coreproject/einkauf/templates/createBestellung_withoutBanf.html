@@ -1,0 +1,72 @@
+<meta charset="utf-8" />
+{%extends "base.html"%}
+
+{%block sidebar %}
+{%include "sidebar_createBestellung.html"%}
+{%endblock%}
+
+{%block content%}
+<h2>Neue Bestellung</h2>
+<form class="ui form" method="post" action="/einkauf/create/Bestellung">
+{%csrf_token%}
+{%if errors or errors_positon %}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in errors.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  		  {% for field, errors in errors_position.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  </div>
+    {%endif%}
+    
+{{form.lieferdatum.label_tag}} {{form.lieferdatum}}
+{{form.lieferort.label_tag}}{{form.lieferort}}<br>
+ <p><div id="lieferanten" class="ui dropdown"><div class="text">Lieferant</div>
+    <i class="dropdown icon"></i>
+    <div class="menu" >
+    {%for lieferant in lieferanten%}
+    <div class="item" id={{lieferant.lieferanten_id}}>{{lieferant}}</div>
+    {%endfor%}
+    </div>
+    </div></p>
+    
+<table class= "ui table" id="positions" >
+<thead>
+<tr>
+ {%for position in positionFormset %}
+{% if forloop.first %}
+{% for field in position%}
+<th>
+{{field.label}}
+</th>
+{%endfor%}
+{%endif%}
+{%endfor%} 
+</tr>
+</thead>
+<tbody>
+{{ positionFormset.management_form }}
+{%for position in positionFormset %}
+<tr id={{forloop.counter0}}>
+{%for field in position%}
+<td>
+{{field}}
+</td>
+{%endfor%}
+</tr>
+{%endfor%}
+<tr><td colspan="4" style="text-align: right"><div class="ui button" id="addPosition"><i class="icon plus"></i>Position</div></td></tr>
+</tbody>
+</table> 
+<div style="text-align: right">
+{{form.summe.label_tag}} {{form.summe}}<br>
+</div>
+<input class="ui submit button" type="submit" value="speichern">
+</form>
+{%endblock%}

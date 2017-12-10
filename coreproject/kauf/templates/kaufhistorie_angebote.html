@@ -1,0 +1,19 @@
+<meta charset="utf-8" />
+
+<h4 class="ui horizontal header divider">Angebote</h4>
+{%for angebot in angebote%}
+<div class="ui segment">
+{{angebot.datum}}<br>
+{% for pos in angebot.warenposition.all %}
+{{pos.fabrikat}}: {{pos.menge}} Mal<br>
+{%endfor%}
+<b>Summe: {{angebot.summe}}€</b><br>
+<div style="text-align: right">
+<div class="ui button"><a  href="/kunden/{{kunde.kunden_id}}/Angebot/{{angebot.angebot_id}}/download">Angebot herunterladen</a></div>
+<div class="ui button"><a  href="/kunden/{{kunde.kunden_id}}/Angebot/{{angebot.angebot_id}}">Details</a></div>
+{%include "options_kaufhistorie_angebote.html"%}
+</div>
+</div>
+{%empty%}
+<h5>Keine Angebote zum Kunden hinterlegt</h5>
+{%endfor%}

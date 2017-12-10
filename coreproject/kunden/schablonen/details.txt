@@ -1,0 +1,18 @@
+def details(request, kunden_id):
+    kunde = Kunde.objects.get(kunden_id=kunden_id)
+    errors=""
+    
+    if request.POST:
+        formKunde = KundenForm(request.POST, instance=kunde)
+        if formKunde.is_valid():
+            formKunde.save()
+            return HttpResponseRedirect('/kunden/overview')
+        else:
+            errors=formKunde.errors
+    
+    kunde = KundenForm(data=model_to_dict(kunde))
+    c= {'kunde': kunde,
+        'id': kunden_id,
+        'errors': errors}
+    c.update(csrf(request))
+    return render_to_response('detailsKunde.html', c)

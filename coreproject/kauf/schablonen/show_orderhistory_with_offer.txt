@@ -1,0 +1,13 @@
+def show_orderhistory_with_offer(request, kunden_id):
+    kunde = Kunde.objects.get(kunden_id=kunden_id)
+    angebote = Angebot.objects.filter(kunde=kunde).order_by('-angebot_id')
+    kaufe = Kauf.objects.filter(kunde=kunde).order_by('-kauf_id')
+    
+    c={
+       'kunde':kunde,
+       'angebote':angebote,
+       'kaufe': kaufe,
+       }
+    
+    c.update(csrf(request))
+    return render_to_response('kaufhistorie.html', c)

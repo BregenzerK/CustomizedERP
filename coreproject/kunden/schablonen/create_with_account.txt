@@ -1,0 +1,19 @@
+def create_with_account (request):
+    if request.POST:
+        formKunde = KundenForm(request.POST)
+        formKonto = KontoForm (request.POST)
+        if formKunde.is_valid() and formKonto.is_valid():
+            konto = formKonto.save()
+            kunde= formKunde.save(commit=False)
+            kunde.konto_id = konto
+            kunde.save()
+            return HttpResponseRedirect('/kunden/overview')
+    else:
+        formKunde = KundenForm
+        formKonto = KontoForm
+        
+    c= {'formKunde': formKunde,
+        'formKonto': formKonto,
+        }
+    c.update(csrf(request))
+    return render_to_response('createKunde.html', c)

@@ -1,0 +1,70 @@
+def show_details_lieferant_with_account(request, lieferanten_id):
+    lieferant = Lieferant.objects.get(lieferanten_id=lieferanten_id)
+    konto = lieferant.konto_id
+    errors=""
+    errors_konto=""
+    if request.POST:
+        form = LieferantForm(request.POST, instance=lieferant)
+        formKonto = KontoForm(request.POST, instance=konto)
+        
+        if form.is_valid() and formKonto.is_valid():
+            form.save()
+            formKonto.save()
+            
+            return HttpResponseRedirect('/lager/Lieferant/overview')
+        else:
+            errors= form.errors
+            errors_konto=formKonto.errors
+    else:
+        form = LieferantForm(data=model_to_dict(lieferant))
+        formKonto = KontoForm(data=model_to_dict(konto))
+    
+    c={
+       'lieferant': form,
+       'konto': formKonto,
+       'errors': errors,
+       'errors_konto': errors_konto,
+       'id': lieferanten_id,
+       }
+    c.update(csrf(request))
+    return render_to_response('detailsLieferant.html',c)
+    
+def show_overview_lieferant (request):
+    lieferanten = Lieferant.objects.all()
+    l={}
+    for lieferant in lieferanten:
+        l[lieferant.lieferanten_id]=LieferantForm(data=model_to_dict(lieferant))
+    
+    c={
+       'lieferanten': l,
+       }
+    return render_to_response('overviewLieferant.html',c)
+    
+def create_Lieferant_with_account (request):
+    errorsLieferant=""
+    errorsKonto=""
+    if request.POST:
+        formLieferant = LieferantForm(request.POST)
+        formKonto = KontoForm(request.POST)
+        if formLieferant.is_valid() and formKonto.is_valid():
+            konto= formKonto.save()
+            lieferant = formLieferant.save(commit=False)
+            lieferant.konto_id = konto
+            formLieferant.save()
+            
+            return HttpResponseRedirect('/lager/overview')
+        else:
+            errorsKonto = formKonto.errors
+            errorsLieferant=formLieferant.errors
+    else:
+        formLieferant = LieferantForm
+        formKonto = KontoForm
+    c={
+       'form' : formLieferant,
+       'formKonto': formKonto,
+       'errorsLieferant': errorsLieferant,
+       'errorsKonto': errorsKonto,
+       }
+    
+    c.update(csrf(request))
+    return render_to_response('createLieferant.html', c) 

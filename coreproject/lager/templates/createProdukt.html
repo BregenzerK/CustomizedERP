@@ -1,0 +1,29 @@
+<meta charset="utf-8" />
+{%extends "base.html"%}
+
+{%block sidebar %}
+{%include "sidebar_createProdukt.html"%}
+{%endblock %}
+
+
+{%block content %}
+<h2>Neues Fabrikat von {{model}}</h2>
+<form class="ui form" action="/lager/create/{{model}}" method="post">
+    {% csrf_token %}
+    {%if formProdukt.errors %}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in formProdukt.errors.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  </div>
+    {%endif%}
+    <table>
+    	{{ formProdukt.as_table}}
+    </table>
+    
+   <p> <input class="ui submit button" type="submit" value="Speichern" /></p>
+</form>
+{%endblock %}

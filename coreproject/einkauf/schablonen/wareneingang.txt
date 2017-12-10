@@ -1,0 +1,50 @@
+from einkauf.forms import BestellpositionForm
+import json
+def create_wareneingang(request):
+    lieferanten = Lieferant.objects.all()
+    formsetPosition = formset_factory(BestellpositionForm)
+    errors_position =""
+    models=[]
+    
+    for produkt in Produkt.objects.all().select_subclasses():
+        model = produkt.to_class_name()
+        if model not in models:
+            models.append(model)
+    if request.POST:
+
+        positionenFormset = formsetPosition(request.POST, request.FILES)
+        if positionenFormset.is_valid():
+            for form in positionenFormset:
+                fabrikat = form.cleaned_data['produkt_bestellung']
+                fabrikat = Produkt.objects.filter(fabrikat=fabrikat).select_subclasses()[0]
+                menge = form.cleaned_data['anzahl_bestellung']
+                fabrikat.lagerbestand += menge
+                fabrikat.EK = form.cleaned_data['einkaufspreis_bestellung']
+                fabrikat.save()
+            return HttpResponseRedirect('/lager/overview')
+        else:
+            errors_position=positionenFormset
+    else:
+        positionenFormset=formsetPosition()
+
+    c={
+       'positionFormset': positionenFormset,
+       'errors_position': errors_position,
+       'models': models,
+       'lieferanten': lieferanten
+       }
+    c.update(csrf(request))    
+    return render_to_response('createWareneingang.html', c)
+
+def get_produkte_zu_lieferant(request):
+    lieferant = request.GET['lieferant']
+    lieferant = Lieferant.objects.filter(firmenname=lieferant)[0]
+    p = Produkt.objects.all().select_subclasses()
+    produkte={}
+    for produkt in p:
+        if produkt.lieferant == lieferant:
+            produkte[produkt.fabrikats_id]=produkt.fabrikat
+
+    produkte = json.dumps(produkte, ensure_ascii=False)
+    return HttpResponse(produkte,content_type='application/json')
+    

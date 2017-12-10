@@ -1,0 +1,60 @@
+{%extends "base.html"%}
+<meta charset="utf-8" />
+
+{%block content %}
+<h2>Bestellanforderung</h2>
+<form class="ui form" method="post" action="/einkauf/Bestellanforderung/{{id}}">
+{%csrf_token%}
+    {%if errors %}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in errors.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  	</div>
+  	{%endif%}
+<h5>Lieferant: {{lieferant.firmenname}}</h5>
+<table class="ui divided table">
+<tr>
+<td>{{form.fabrikat.label_tag}}</td>
+<td>{{form.fabrikat}}</td>
+</tr>
+<tr>
+<td>{{form.menge.label_tag}}</td>
+<td>{{form.menge}}</td>
+</tr>
+<tr>
+<td>{{form.einkaufspreis_banf.label_tag}}</td>
+<td>{{form.einkaufspreis_banf}}</td>
+</tr>
+<tr>
+<td>{{form.summe_banf.label_tag}}</td>
+<td>{{form.summe_banf}}</td>
+</tr>
+<tr>
+<td>Bestellsumme für Lieferanten:</td>
+<td id="bestellsumme">{{bestellsumme}}</td>
+</tr>
+{% if lieferant.mindestbestellwert%}
+<tr>
+<td>Mindestbestellwert: </td>
+<td>{{lieferant.mindestbestellwert}}€</td>
+</tr>
+{%endif%}
+</table>
+<input type="submit" value="speichern" class="ui submit button">
+</form>
+<script type="text/javascript">
+var bestellsumme = parseFloat($('#bestellsumme').text().replace(',', '.'));
+function calc_bestellsumme(){
+	var summe = 0;
+	summe = (parseFloat($('#id_einkaufspreis_banf').val().replace(',', '.'))*parseFloat($('#id_menge').val().replace(',', '.')));
+	$('#id_summe_banf').val(summe);
+	summe+= bestellsumme;
+	$('#bestellsumme').text(summe);
+}
+calc_bestellsumme();
+</script>
+{%endblock%}

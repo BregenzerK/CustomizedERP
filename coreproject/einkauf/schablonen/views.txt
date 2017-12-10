@@ -1,0 +1,16 @@
+from django.shortcuts import render_to_response
+from lager.models import Produkt, Lieferant
+from django.http.response import HttpResponseRedirect, HttpResponse
+from django.core.context_processors import csrf
+from django.forms.formsets import formset_factory
+
+#METHODS
+
+def pay_bestellung(request, bestell_id):
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+def upload_document(request, bestell_id):
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+def download_bestellung(request, bestell_id):
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+def scan_products(request, bestell_id):
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

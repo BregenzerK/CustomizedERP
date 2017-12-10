@@ -1,0 +1,54 @@
+<meta charset="utf-8" />
+{%extends "base.html"%}
+
+{%block content%}
+<h2>Kauf Nr. {{kauf_id}}</h2>
+<form class="ui form" method="post" action="/kunden/{{kunden_id}}/Kauf/{{kauf_id}}">
+{%csrf_token%}
+<p>
+{% if kauf.abgeschlossen.data == True%}
+{{kauf.abgeschlossen.label_tag}} <i class="ui green checkmark icon"></i><br>
+{%else%}
+{{kauf.abgeschlossen.label_tag}} <i class="ui red remove icon"></i><br>
+{%endif%}
+{{kauf.datum.label_tag}} {{kauf.datum.data}}<br>
+{{kauf.standort.label_tag}} {{kauf.standort.data}}<br>
+</p>
+
+<table class="ui table">
+<thead>
+<tr>
+{{ positionen.management_form }}
+{%for position in positionen%}
+{% if forloop.first%}
+{%for field in position%}
+<th>{{field.label}}</th>
+{%endfor%}
+{%endif%}
+{%endfor%}
+</tr>
+</thead>
+
+<tbody>
+{%for position in positionen%}
+<tr id={{forloop.counter0}}>
+{%for field in position%}
+{%if forloop.last%}
+{%if field.data == True%}
+<td><i class="ui green checkmark icon"></i></td>
+{%else%}
+<td><i class="ui red remove icon"></i></td>
+{%endif%}
+{%else%}
+<td>{{field.data}}</td>
+{%endif%}
+{%endfor%}
+</tr>
+{%endfor%}
+</tbody>
+</table>
+<div style="text-align: right">{{kauf.summe.label_tag}} {{kauf.summe.data}}</div>
+
+<input class="ui submit button" type="submit" value="Kauf aktualisieren">
+</form>
+{%endblock%}

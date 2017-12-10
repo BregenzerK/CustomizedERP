@@ -1,0 +1,14 @@
+def get_overview (request):
+    
+    object={}
+      
+    for kunde in Kunde.objects.all():
+        print kunde.kunden_id
+        object[kunde.kunden_id] = KundenForm(data=model_to_dict(kunde))
+
+    c= {'kunden': object,
+        }
+    c.update(csrf(request))
+    
+    return render_to_response('overviewKunde.html', c)
+

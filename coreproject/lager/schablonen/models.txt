@@ -1,0 +1,19 @@
+from django.db import models
+from model_utils.managers import InheritanceManager
+
+MWST_KLASSEN =((19,"19 Prozent"),(7,"7 Prozent"))
+ 
+class Produkt (models.Model):
+    fabrikats_id = models.AutoField(primary_key = True)
+    fabrikat = models.CharField(max_length=50, unique=True) 
+    verkaufspreis = models.DecimalField(max_digits=8, decimal_places=2)
+    EK= models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    lagerbestand = models.PositiveIntegerField(default=0) 
+    preisart = models.CharField(max_length=50, choices=(("Stueck","Einzelpreis"),("Gewicht", "Gewichtpreis"), ("Meter", "Meterpreis"))) 
+    seriennummer = models.BooleanField(default=False)
+   
+    def __unicode__(self):
+        return unicode(self.fabrikat)
+    
+    objects = InheritanceManager()
+

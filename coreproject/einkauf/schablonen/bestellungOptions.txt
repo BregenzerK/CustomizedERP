@@ -1,0 +1,4 @@
+<meta charset="utf-8" />
+<div class="ui button"><a href="/einkauf/Bestellung/{{bestellung.bestell_id}}/Details">Details</a></div>
+<div class="ui button"><a href="/einkauf/Bestellung/{{bestellung.bestell_id}}/close">Bestellung abschliessen</a></div><br>
+<p>

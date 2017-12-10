@@ -1,0 +1,55 @@
+<meta charset="utf-8" />
+{%extends "base.html"%}
+{%block sidebar %}
+{%include "sidebarBestellungDetails.html"%}
+<a class="item" href="/einkauf/Bestellung/{{id}}/close">Bestellung abschließen</a>
+{%endblock%}
+
+{%block content%}
+<h2>Bestellung Nr. {{id}}</h2>
+<form class="ui form" method="post" action="/einkauf/Bestellung/{{id}}/Details">
+{%csrf_token%}
+<p>{{bestellung.lieferdatum.label_tag}}{{bestellung.lieferdatum.data}}<br>
+{{bestellung.lieferort.label_tag}}{{bestellung.lieferort.data}}<br>
+Lieferant: {{lieferant.firmenname}}</p>
+
+<div class="ui checkbox" ><input type="checkbox"  id="complete"><label>vollständige Lieferung</label></div>
+
+<table class="ui table">
+<thead>
+</tr>
+{{ positionen.management_form }}
+{%for position in positionen%}
+{% if forloop.first%}
+{%for field in position%}
+<th>{{field.label}}</th>
+{%endfor%}
+{%endif%}
+{%endfor%}
+</tr>
+</thead>
+<tbody>
+
+{%for position in positionen%}
+<tr id={{forloop.counter0}}>
+{%for field in position%}
+{%if forloop.last%}
+{%if field.data == True%}
+<td><div class="ui read-only checkbox">{{field}}</div></td>
+{%else%}
+<td><div class="ui checkbox">{{field}}</div></td>
+{%endif%}
+{%else%}
+<td>{{field.data}}</td>
+{%endif%}
+{%endfor%}
+</tr>
+{%endfor%}
+
+</tbody>
+</table>
+<div style="text-align: right">{{bestellung.summe.label_tag}} {{bestellung.summe.data}}</div>
+
+<input class="ui submit button" type="submit" value="Wareneingang buchen">
+</form>
+{%endblock%}

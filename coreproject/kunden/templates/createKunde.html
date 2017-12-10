@@ -1,0 +1,41 @@
+{%extends "base.html" %}
+
+{%block sidebar %}
+
+{%endblock %}
+
+
+{%block content %}
+<h2>Neuer Kunde</h2>
+<form class="ui form" action="/kunden/create" method="post">
+    {% csrf_token %}
+    {%if formKunde.errors or formKonto.errors %}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in formKunde.errors.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  	{% for field, errors in formKonto.errors.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  </div>
+    {%endif%}
+    <div class="ui two column grid">
+    <div class="column">
+    <table>
+    	{{ formKunde.as_table}}
+    </table>
+    </div>
+    <div class="column">
+    <table>
+    	{{ formKonto.as_table}}
+    </table>
+    </div>
+    </div>
+   <p> <input class="ui submit button" type="submit" value="Speichern" /></p>
+</form>
+{%endblock %}

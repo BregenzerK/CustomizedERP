@@ -1,0 +1,33 @@
+<meta charset="utf-8" />
+{%extends "base.html"%}
+{% block sidebar %}
+<a class="item" href="/kunden/{{kunde.kunden_id}}/create/Kauf"><i class="add icon"></i> Kauf</a>
+{%include "sidebar_kaufhistorie.html"%}
+{%endblock%}
+
+
+{%block content %}
+<h2>Kaufhistorie</h2>
+<h4 class="ui horizontal header divider">Käufe</h4>
+
+{%for kauf in kaufe%}
+<div class="ui segment">
+{{kauf.datum}}<br>
+{% for pos in kauf.warenposition.all %}
+{{pos.fabrikat}}: {{pos.menge}} Mal<br>
+{%endfor%}
+<b>Summe: {{kauf.summe}}€</b><br>
+<div style="text-align: right">
+<div class="ui button"><a href="/kunden/{{kunde.kunden_id}}/Kauf/{{kauf.kauf_id}}/download">Rechnung herunterladen</a></div>
+<div class="ui button"><a href="/kunden/{{kunde.kunden_id}}/Kauf/{{kauf.kauf_id}}">Details</a></div>
+</div>
+</div>
+{%empty%}
+<h5>Keine Käufe zum Kunden hinterlegt</h5>
+{%endfor%}
+
+{%if angebote%}
+{%include "kaufhistorie_angebote.html"%}
+{%endif%}
+
+{%endblock%}

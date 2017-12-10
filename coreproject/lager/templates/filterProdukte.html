@@ -1,0 +1,20 @@
+<meta charset="utf-8" />
+
+<form class="ui form" method="post" action="/lager/overview">
+{% csrf_token %}
+    {%if filter.errors %}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in filter.errors.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  	{%endfor%}
+  </div>
+    {%endif%}
+
+{{filter}}
+
+<input class="ui submit button" type="submit" value="Filtern">
+
+</form>

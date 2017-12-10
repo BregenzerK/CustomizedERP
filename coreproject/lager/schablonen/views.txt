@@ -1,0 +1,49 @@
+from django.shortcuts import render_to_response
+from django.http.response import HttpResponseRedirect
+from django.core.context_processors import csrf
+from django.forms.models import model_to_dict
+from django.db.models.loading import get_model
+from django.forms.formsets import formset_factory
+from lager.forms import ProduktOverviewForm
+from lager.models import Produkt
+#IMPORTS
+
+
+def get_model_name(form):
+    model = form.Meta.model
+    model = str(model).replace("<class 'lager.models.", "")
+    model = model.replace("'>", "") 
+    return model
+
+#CREATE METHODS PRODUKTE
+
+#OVERVIEW METHOD PRODUKTE
+
+def details (request, model, fabrikats_id):
+    mymodel = get_model('lager', model)
+    produkt = mymodel.objects.get(fabrikats_id=fabrikats_id)
+    errors=""
+
+    #DETAIL PRODUKTE
+    
+    if request.POST:
+        formProdukt = form(request.POST, instance=produkt)
+        if formProdukt.is_valid():
+            formProdukt.save()
+            return HttpResponseRedirect ('/lager/overview')
+        else:
+            errors = formProdukt.errors
+
+    produkt = form(data=model_to_dict(produkt))
+    
+    c={'produkt':produkt,
+       'model': model,
+       'id': fabrikats_id,
+       'errors': errors,
+       }
+    c.update(csrf(request))
+    return render_to_response('detailsProdukt.html', c)
+    
+    #LIEFERANT METHODS
+    
+    #INVENTUR METHODS

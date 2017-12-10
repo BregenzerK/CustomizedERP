@@ -1,0 +1,21 @@
+def get_overview_filter (request):
+    
+    if request.POST:
+        formfilter= FilterForm(request.POST)
+        if formfilter.is_valid:
+            #adaptFilter
+            return HttpResponseRedirect('/kunden/overview')
+        
+    else:
+        formfilter = FilterForm
+    
+    object={}
+ 
+    for kunde in Kunde.objects.all():
+        object[kunde.kunden_id] = KundenForm(data=model_to_dict(kunde))
+    c= {'kunden': object,
+        'filter': formfilter,
+        }
+    c.update(csrf(request))
+    
+    return render_to_response('overviewKunde.html', c)

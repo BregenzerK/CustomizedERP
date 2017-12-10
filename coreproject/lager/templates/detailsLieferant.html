@@ -1,0 +1,41 @@
+<meta charset="utf-8" />
+{%extends "base.html"%}
+
+{%block content%}
+<h2>Lieferant: {{lieferant.firmenname.data}}</h2>
+<form class="ui form" method="post" action="/lager/Lieferant/{{id}}/Details">
+{%csrf_token%}
+    {%if errors or errors_konto%}
+    <div class="ui negative message">
+	  <div class="header"> Bitte folgende Fehler korrigieren: </div>
+	  {% for field, errors in errors.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  		{%endfor%}
+  		
+  		{% for field, errors in errors_konto.items %}
+	  	{%for error in errors %}
+  			<p>{{field}}: {{error}}</p>
+  		{%endfor%}
+  		{%endfor%}
+  </div>
+    {%endif%}
+    
+<div class="ui two column grid">
+<div class="column">
+<table>
+{{lieferant.as_table}}
+</table>
+</div>
+<div class="column">
+<table>
+{{konto.as_table}}
+</table>
+</div>
+</div>
+
+<input class="ui submit button" type="submit" value="speichern">
+
+</form>
+{%endblock%}

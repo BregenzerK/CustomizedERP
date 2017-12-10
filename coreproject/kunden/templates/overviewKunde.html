@@ -1,0 +1,48 @@
+<meta charset="utf-8" />
+{%extends "base.html" %}
+
+{%block sidebar %}
+<a class="item" href="/kunden/create">Kunden anlegen</a>
+{% include "sidebar_overviewKunde.html" %}
+{%endblock %}
+
+
+{%block content %}
+<h2>Kundenübersicht</h2>
+{%include "filterKunde.html" %}
+
+{%if kunden %}
+<table class= "ui table" id="overview">
+<thead>
+<tr>
+<th></th>
+ {%for kunde in kunden.itervalues %}
+{% if forloop.first %}
+{% for field in kunde%}
+<th>
+{{field.label}}
+</th>
+{%endfor%}
+{%endif%}
+{%endfor%} 
+</tr>
+</thead> 
+<tbody>
+
+{% for id, kunde in kunden.items %}
+<tr href="/kunden/{{id}}/Details">
+<td><div class="ui checkbox"><input type="checkbox" checked="checked"><label></label></div></td>
+{% for field in kunde %}
+<td>
+{{field.data}}
+</td>
+{%endfor%}
+</tr>
+{%endfor %}
+
+</tbody>
+</table>
+{%else%}
+<p><b>Keine Kundendaten gepflegt</b></p>
+{%endif%}
+{%endblock %}

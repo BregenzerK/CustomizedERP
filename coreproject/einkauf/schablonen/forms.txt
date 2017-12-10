@@ -1,0 +1,22 @@
+from django import forms
+from lager.models import Produkt
+        
+class BestellpositionForm (forms.Form):
+    produkt_bestellung = forms.ModelChoiceField(label="Produkt", queryset=Produkt.objects.all().select_subclasses())
+    anzahl_bestellung = forms.IntegerField(initial=1, label="Menge")
+    einkaufspreis_bestellung = forms.DecimalField(max_digits=10, decimal_places=2, label="Einkaufspreis")
+    summe_bestellung = forms.DecimalField(max_digits=10, decimal_places=2, label="Summe", widget=forms.NumberInput(attrs={'readonly':'readonly'}))
+    
+class WarenpositionForm (forms.Form):
+    produkt = forms.CharField(max_length=50, widget= forms.TextInput(attrs={'readonly':'readonly'}))
+    anzahl = forms.IntegerField(initial=1, label="Menge")
+    einkaufspreis = forms.DecimalField(max_digits=10, decimal_places=2)
+    summe = forms.DecimalField(max_digits=10, decimal_places=2, widget=forms.NumberInput(attrs={'readonly':'readonly'}))
+
+class WarenpositionDetailForm (forms.Form):
+    produkt = forms.CharField(max_length=50)
+    anzahl = forms.IntegerField(initial=1, label="Menge")
+    einkaufspreis = forms.DecimalField(max_digits=10, decimal_places=2)
+    summe = forms.DecimalField(max_digits=10, decimal_places=2)
+    erhalten = forms.BooleanField(initial=False)
+        

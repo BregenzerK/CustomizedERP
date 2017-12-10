@@ -1,0 +1,52 @@
+from kauf.models import Angebot
+from kauf.forms import AngebotForm
+def create_offer(request, kunden_id):
+    
+    kunde = Kunde.objects.get(kunden_id=kunden_id)
+    formsetPosition = formset_factory(WarenpositionForm)
+    errors=""
+    errors_position =""
+    
+    models=[]
+    
+    for produkt in Produkt.objects.all().select_subclasses():
+        model = produkt.to_class_name()
+        if model not in models:
+            models.append(model)
+    
+    if request.POST:
+        formAngebot = AngebotForm(request.POST)
+        positionFormset = formsetPosition(request.POST, request.FILES)
+        if formAngebot.is_valid() and positionFormset.is_valid():
+            
+            angebot = formAngebot.save(commit=False)
+            angebot.kunde = kunde
+            formAngebot.save()
+            for form in positionFormset:
+                position = Warenposition(fabrikat= form.cleaned_data['produkt'], menge = form.cleaned_data['menge'])
+                position.save()
+                angebot.warenposition.add(position)
+            
+            angebot.save()
+            
+            
+            return HttpResponseRedirect('/kunden/'+str(kunde.kunden_id)+'/kaufhistorie')
+        else:
+            errors =formAngebot.errors
+            errors_position = positionFormset.errors
+            
+    else:
+        formAngebot = AngebotForm
+        positionFormset = formsetPosition
+    
+    c={
+       'form': formAngebot,
+       'positionFormset': positionFormset,
+       'id': kunde.kunden_id,
+       'errors_offer': errors,
+       'errors_position': errors_position,
+       'models': models,
+       }
+    
+    c.update(csrf(request))
+    return render_to_response('createAngebot.html', c)

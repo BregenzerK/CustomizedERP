@@ -1,0 +1,29 @@
+<meta charset="utf-8" />
+{%extends "base.html"%}
+
+{%block sidebar%}
+<a class="item" href="/lager/create/Lieferant">Lieferant anlegen</a>
+{%endblock%}
+
+{%block content%}
+<h2>Lieferantenübersicht</h2>
+<table class="ui table" id="overview">
+<thead>
+<tr>
+{%for id, lieferant in lieferanten.items%}
+{%if forloop.first %}
+{%for field in lieferant%}
+<th>{{field.label}}</th>
+{%endfor%}
+{%endif%}
+</tr></thead>
+<tbody>
+<tr href="/lager/Lieferant/{{id}}/Details">
+{%for field in lieferant%}
+<td>{{field.data}}</td>
+{%endfor%}
+</tr>
+{%endfor%}
+</tbody>
+</table>
+{%endblock%}

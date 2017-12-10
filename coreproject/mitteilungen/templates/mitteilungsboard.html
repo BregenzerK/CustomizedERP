@@ -1,0 +1,57 @@
+{%extends "base.html"%}
+<meta charset="utf-8" />
+
+{%block content %}
+<h2>Mitteilungsboard</h2>
+<div class="ui divided selection list">
+<h4 class="ui horizontal header divider">Neue Nachrichten</h4>
+{% for message in messages %}
+{% if message.gelesen == False %} 
+<div class="item">
+<div class="content">
+{%if message.mitteilungbanf %}
+<div class="header">Nachricht zu einer Bestellanforderung</div>
+<a href="/einkauf/Bestellanforderung/{{message.bestellanforderung}}/{{message.mitteilung_id}}">
+{{message.nachricht}} <br>
+Für Details klicken Sie hier</a>.
+{%else%}
+<div class="header">Nachricht zu einem Kauf Nr. {{message.kauf.kauf_id}}</div>
+<a href="/kunden/{{message.kauf.kunde.kunden_id}}/Kauf/{{message.kauf}}/{{message.mitteilung_id}}">
+{{message.nachricht}} <br>
+Für Details klicken Sie hier</a>.
+{%endif%}
+<div style="text-align: right;">
+<div class="ui button"><a href="/Mitteilungsboard/{{message.mitteilung_id}}/gelesen">gelesen</a></div>
+</div>
+</div>
+</div>
+{%endif%}
+{%endfor%}
+
+<h4 class="ui horizontal header divider">Gelesene Nachrichten</h4>
+
+{%for message in messages %}
+{% if message.gelesen %}
+<div class="item">
+<div class="content">
+{%if message.mitteilungbanf %}
+<div class="header">Nachricht zu einer Bestellanforderung</div>
+<a href="/einkauf/Bestellanforderung/{{message.bestellanforderung}}">
+{{message.nachricht}} <br>
+Für Details klicken Sie hier</a>.
+{%else%}
+<div class="header">Nachricht zu einem Kauf Nr. {{message.kauf.kauf_id}}</div>
+<a href="/kunden/{{message.kauf.kunde.kunden_id}}/Kauf/{{message.kauf}}">
+{{message.nachricht}} <br>
+Für Details klicken Sie hier</a>.
+{%endif%}
+<div style="text-align: right;">
+<div class="ui button"><a href="/Mitteilungsboard/{{message.mitteilung_id}}/gelesen">ungelesen</a></div>
+</div><!-- button div -->
+</div><!-- content -->
+</div><!-- item -->
+</div><!-- list -->
+{%endif%}
+{%endfor%}
+
+{%endblock%} 

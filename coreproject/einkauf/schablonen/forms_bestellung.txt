@@ -1,0 +1,9 @@
+from einkauf.models import Bestellung
+
+class BestellForm (forms.ModelForm):
+    class Meta:
+        model= Bestellung
+        exclude=['bestellposition', 'status']
+        widgets = {
+                   'summe': forms.NumberInput(attrs={'readonly':'readonly'}),
+                   }

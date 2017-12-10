@@ -1,0 +1,111 @@
+
+/*******************************
+            Global
+*******************************/
+
+html,
+body {
+  font-size: 15px;
+  height: 100%;
+}
+
+body {
+  font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  background: #FFFFFF;
+  margin: 10px;
+  padding: 10px;
+  color: #555555;
+  text-rendering: optimizeLegibility;
+  min-width: 320px;
+}
+
+/*******************************
+          UI Overrides
+*******************************/
+
+.ui.header {
+  font-family: 'Source Sans Pro', "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  width: 85%;
+  z-index: 2;
+}
+
+.ui.header,
+h1,
+h2 {
+  font-weight: normal !important;
+}
+
+h1.ui.header {
+  font-size: 3em;
+}
+
+h4.ui.header,
+h5.ui.header,
+.ui.icon.header {
+  font-weight: bold !important;
+}
+h5{
+	margin: 0rem;
+}
+
+.ui.button {
+  font-weight: normal;
+  text-decoration: none;
+  color:#000000;
+}
+.ui.pointing.label{
+	display: none;
+}
+
+a {
+  text-decoration: none;
+  -webkit-transition: color 0.3s ease;
+  transition: color 0.3s ease;
+  color:#000000;
+}
+
+a:hover {
+  color:#000000;
+  cursor: pointer !important;
+}
+
+tr.hover {
+   cursor: pointer;
+}
+.ui.vertical.menu .item > i.icon{
+	float: left;
+	margin: 0em 0em 0.5em;
+}
+.ui.textarea, .ui.form textarea {
+	height: 4em;
+	min-height: 0em;
+}
+body.pushable {
+	background: #FFFFFF !important;
+}
+.pusher{
+	min-height:	75% !important;
+	max-width: 85% !important;
+	background: #FFFFFF !important;
+}
+.ui.right.sidebar{
+	max-width: 15% !important;
+}
+
+.ui.visible.right.sidebar ~ .fixed, .ui.visible.right.sidebar ~ .pusher{
+	-webkit-transform: none !important;
+	max-width: 85% !important;
+} 
+.ui.menu .item > i.dropdown.icon{
+	float: initial !important;	
+}
+
+.ui.form select, input{
+	display: inline !important;
+	width: initial !important;
+	vertical-align: middle !important;
+	margin: 0.2em !important;
+}
+.errorlist{
+	display: none;
+}
